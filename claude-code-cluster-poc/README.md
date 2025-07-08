@@ -24,7 +24,15 @@ A Proof of Concept implementation of a distributed Claude Code execution system 
 
 ## Quick Start
 
-📚 **詳細なガイド**: [QUICKSTART.md](QUICKSTART.md) | [USAGE.md](USAGE.md) | [DEPLOYMENT.md](DEPLOYMENT.md) | [EXAMPLES.md](EXAMPLES.md)
+## ⚠️ 重要な設計変更
+
+**このPoCはClaude Code CLIを使用した分散実行システムに変更されました。**
+
+📚 **必読ドキュメント**: 
+- 🔄 [REVISED_CONCEPT.md](../REVISED_CONCEPT.md) - **設計変更の詳細**
+- 🏗️ [ARCHITECTURE.md](../ARCHITECTURE.md) - **新アーキテクチャ**
+- 🔧 [CLAUDE_CODE_INTEGRATION.md](CLAUDE_CODE_INTEGRATION.md) - **Claude Code CLI統合**
+- 📚 [QUICKSTART.md](QUICKSTART.md) | [USAGE.md](USAGE.md) | [DEPLOYMENT.md](DEPLOYMENT.md) | [EXAMPLES.md](EXAMPLES.md)
 
 ### 1. Setup Environment
 

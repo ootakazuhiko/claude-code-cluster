@@ -11,9 +11,11 @@ class Settings(BaseSettings):
     
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     
-    # API設定
+    # GitHub API設定
     github_token: str = Field(..., description="GitHub API token")
-    anthropic_api_key: str = Field(..., description="Anthropic API key")
+    
+    # Claude Code CLI設定（注意: Claude APIキーは不要）
+    claude_code_cli_path: str = Field(default="/usr/local/bin/claude-code", description="Claude Code CLI executable path")
     
     # Git設定
     git_user_name: str = Field(default="Claude Code Bot", description="Git user name")
@@ -27,6 +29,14 @@ class Settings(BaseSettings):
     # アプリケーション設定
     default_branch: str = Field(default="main", description="Default git branch")
     log_level: str = Field(default="INFO", description="Log level")
+    
+    # 分散処理設定
+    coordinator_host: str = Field(default="localhost", description="Coordinator host")
+    coordinator_port: int = Field(default=8001, description="Coordinator port")
+    
+    # Webhook設定
+    webhook_secret: str = Field(default="", description="GitHub webhook secret")
+    webhook_port: int = Field(default=8000, description="Webhook server port")
     
     def model_post_init(self, __context) -> None:
         """Post-initialization: create directories"""

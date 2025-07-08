@@ -32,6 +32,11 @@ A Proof of Concept implementation of a distributed Claude Code execution system 
 - 🔄 [REVISED_CONCEPT.md](../REVISED_CONCEPT.md) - **設計変更の詳細**
 - 🏗️ [ARCHITECTURE.md](../ARCHITECTURE.md) - **新アーキテクチャ**
 - 🔧 [CLAUDE_CODE_INTEGRATION.md](CLAUDE_CODE_INTEGRATION.md) - **Claude Code CLI統合**
+
+📖 **使用ガイド**:
+- 📋 [POC_USAGE_GUIDE.md](POC_USAGE_GUIDE.md) - **完全な使用ガイド（5台PC構成）**
+- 🧪 [SIMULATOR_GUIDE.md](SIMULATOR_GUIDE.md) - **シミュレーター実行ガイド（単一PC）**
+- 🎮 [CLAUDE_CODE_SIMULATOR.py](CLAUDE_CODE_SIMULATOR.py) - **動作確認用シミュレーター**
 - 📚 [QUICKSTART.md](QUICKSTART.md) | [USAGE.md](USAGE.md) | [DEPLOYMENT.md](DEPLOYMENT.md) | [EXAMPLES.md](EXAMPLES.md)
 
 ### 1. Setup Environment

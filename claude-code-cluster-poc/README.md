@@ -24,14 +24,16 @@ A Proof of Concept implementation of a distributed Claude Code execution system 
 
 ## Quick Start
 
+📚 **詳細なガイド**: [QUICKSTART.md](QUICKSTART.md) | [USAGE.md](USAGE.md) | [DEPLOYMENT.md](DEPLOYMENT.md) | [EXAMPLES.md](EXAMPLES.md)
+
 ### 1. Setup Environment
 
 ```bash
 # Clone and setup
 cd claude-code-cluster-poc
-uv venv
+python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e .
+pip install -e .
 
 # Configure environment
 cp .env.example .env

@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  coordinator:
+    build: .
+    ports:
+      - "8001:8001"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: claude-cluster-distributed start-coordinator --host 0.0.0.0 --port 8001
+    volumes:
+      - ./cluster_state.json:/app/cluster_state.json
+    networks:
+      - cluster-network
+
+  agent-backend:
+    build: .
+    depends_on:
+      - coordinator
+    ports:
+      - "8002:8002"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: >
+      claude-cluster-distributed start-node 
+      --coordinator-host coordinator 
+      --coordinator-port 8001 
+      --agent-port 8002
+      --specialties backend,database,api
+      --max-tasks 2
+      --node-id backend-node
+    networks:
+      - cluster-network
+
+  agent-frontend:
+    build: .
+    depends_on:
+      - coordinator
+    ports:
+      - "8003:8003"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: >
+      claude-cluster-distributed start-node 
+      --coordinator-host coordinator 
+      --coordinator-port 8001 
+      --agent-port 8003
+      --specialties frontend,ui,react,javascript
+      --max-tasks 2
+      --node-id frontend-node
+    networks:
+      - cluster-network
+
+  agent-testing:
+    build: .
+    depends_on:
+      - coordinator
+    ports:
+      - "8004:8004"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: >
+      claude-cluster-distributed start-node 
+      --coordinator-host coordinator 
+      --coordinator-port 8001 
+      --agent-port 8004
+      --specialties testing,qa,pytest,jest
+      --max-tasks 3
+      --node-id testing-node
+    networks:
+      - cluster-network
+
+  agent-devops:
+    build: .
+    depends_on:
+      - coordinator
+    ports:
+      - "8005:8005"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: >
+      claude-cluster-distributed start-node 
+      --coordinator-host coordinator 
+      --coordinator-port 8001 
+      --agent-port 8005
+      --specialties devops,infrastructure,ci,docker
+      --max-tasks 1
+      --node-id devops-node
+    networks:
+      - cluster-network
+
+  webhook-server:
+    build: .
+    depends_on:
+      - coordinator
+    ports:
+      - "8000:8000"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: >
+      python -m src.services.webhook_server 
+      --coordinator-host coordinator 
+      --coordinator-port 8001
+    networks:
+      - cluster-network
+
+networks:
+  cluster-network:
+    driver: bridge
+
+volumes:
+  cluster-data:

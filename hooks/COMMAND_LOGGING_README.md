@@ -14,7 +14,7 @@ Claude Code Hook Systemに包括的なコマンドロギング機能を実装し
 - **コンテキストマネージャー**: 安全な実行時間トラッキング
 - **統計情報**: コマンド実行統計の自動集計
 
-### 2. agent-auto-loop-with-logging.py
+### 2. universal-agent-auto-loop-with-logging.py
 ロギング機能を統合したエージェント自動ループシステム：
 
 - **全コマンドの記録**: GitHub API、シェルコマンド、ファイル操作
@@ -69,10 +69,10 @@ CREATE TABLE issue_processing_log (
 #### エージェントの起動（ロギング付き）
 ```bash
 # CC01エージェントをロギング付きで起動
-python3 hooks/agent-auto-loop-with-logging.py CC01
+python3 hooks/universal-agent-auto-loop-with-logging.py CC01 owner repo
 
 # 制限付き実行
-python3 hooks/agent-auto-loop-with-logging.py CC01 --max-iterations 5
+python3 hooks/universal-agent-auto-loop-with-logging.py CC01 owner repo --max-iterations 5
 ```
 
 #### ログの表示

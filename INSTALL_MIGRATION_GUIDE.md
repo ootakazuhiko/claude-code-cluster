@@ -210,6 +210,20 @@ chmod +x install-wrapper.sh
 4. **Check logs** if installation fails
 5. **Report issues** on GitHub
 
+## Security Considerations
+
+While the current installer downloads scripts and GPG keys directly, we prioritize usability for the initial release. Future versions may include:
+
+- Script checksum verification
+- GPG key fingerprint validation
+- Pinned version downloads
+
+For security-conscious users, we recommend:
+
+1. Clone the repository manually: `git clone https://github.com/ootakazuhiko/claude-code-cluster.git`
+2. Review the scripts before execution
+3. Run the installer locally: `./install-improved.sh`
+
 ## Getting Help
 
 If you encounter issues:

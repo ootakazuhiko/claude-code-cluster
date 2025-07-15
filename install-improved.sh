@@ -3,7 +3,7 @@
 # Claude Code Cluster - Improved Installation Script
 # Flexible installation with better error handling and non-root support
 # Usage: 
-#   curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/install.sh | bash
+#   curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/install-improved.sh | bash
 #   ./install.sh [OPTIONS]
 
 set -euo pipefail
@@ -285,7 +285,8 @@ install_dependencies() {
                 log "Installing GitHub CLI..."
                 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | run_cmd dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
                 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | run_cmd tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-                run_cmd apt update && run_cmd apt install -y gh || track_error "Failed to install GitHub CLI"
+                run_cmd apt update || track_error "Failed to update package list for GitHub CLI installation"
+                run_cmd apt install -y gh || track_error "Failed to install GitHub CLI"
             fi
             ;;
             

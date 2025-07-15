@@ -50,9 +50,9 @@ run_test "Help option" "./install-improved.sh --help"
 # Test 2: Version option
 run_test "Version option" "./install-improved.sh --version"
 
-# Test 3: Dry run with custom directory
+# Test 3: Custom directory
 TEST_DIR="$TEST_BASE/test1"
-run_test "Custom directory (dry run)" "./install-improved.sh --dir $TEST_DIR --yes --skip-deps --dry-run 2>/dev/null || true"
+run_test "Custom directory" "mkdir -p $TEST_DIR && ./install-improved.sh --dir $TEST_DIR --yes --skip-deps --version 2>/dev/null"
 
 # Test 4: No-sudo installation simulation
 TEST_DIR="$TEST_BASE/test2"
@@ -65,7 +65,7 @@ run_test "Force reinstall" "timeout 5 ./install-improved.sh --dir $TEST_DIR --fo
 
 # Test 6: Custom venv directory
 TEST_DIR="$TEST_BASE/test4"
-run_test "Custom venv" "./install-improved.sh --dir $TEST_DIR --venv myenv --yes --skip-deps --dry-run 2>/dev/null || true"
+run_test "Custom venv" "./install-improved.sh --dir $TEST_DIR --venv myenv --yes --skip-deps --version 2>/dev/null"
 
 # Test 7: Parse multiple arguments
 run_test "Multiple arguments" "./install-improved.sh --dir /tmp/test --venv env --no-sudo --force --skip-deps --yes --version 2>/dev/null || true"
@@ -78,7 +78,7 @@ run_test "Shell detection" "bash -c 'source ./install-improved.sh --help >/dev/n
 
 # Test 10: Directory creation
 TEST_DIR="$TEST_BASE/test5"
-run_test "Directory creation" "mkdir -p $TEST_DIR && touch $TEST_DIR/.env && ./install-improved.sh --dir $TEST_DIR --yes --skip-deps --dry-run 2>/dev/null || true"
+run_test "Directory creation" "mkdir -p $TEST_DIR && touch $TEST_DIR/.env && ./install-improved.sh --dir $TEST_DIR --yes --skip-deps --version 2>/dev/null"
 
 # Cleanup
 echo

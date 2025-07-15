@@ -155,12 +155,12 @@ show_help() {
     echo "Usage: $0 [COMMAND] [OPTIONS]"
     echo ""
     echo "Commands:"
-    echo "  start [CC01|CC02|CC03|all] [max_iterations] [cooldown]  - Start agent(s)"
-    echo "  stop [CC01|CC02|CC03|all]                               - Stop agent(s)"
-    echo "  status [CC01|CC02|CC03|all]                            - Check agent status"
-    echo "  metrics [CC01|CC02|CC03|all]                           - Show agent metrics"
-    echo "  restart [CC01|CC02|CC03|all]                           - Restart agent(s)"
-    echo "  logs [CC01|CC02|CC03]                                  - Show agent logs"
+    echo "  start [CC01|CC02|CC03|CC04|CC05|all] [max_iterations] [cooldown]  - Start agent(s)"
+    echo "  stop [CC01|CC02|CC03|CC04|CC05|all]                               - Stop agent(s)"
+    echo "  status [CC01|CC02|CC03|CC04|CC05|all]                            - Check agent status"
+    echo "  metrics [CC01|CC02|CC03|CC04|CC05|all]                           - Show agent metrics"
+    echo "  restart [CC01|CC02|CC03|CC04|CC05|all]                           - Restart agent(s)"
+    echo "  logs [CC01|CC02|CC03|CC04|CC05]                                  - Show agent logs"
     echo "  cleanup                                                - Clean up PID files and logs"
     echo "  help                                                   - Show this help"
     echo ""
@@ -190,7 +190,11 @@ main() {
                 start_agent "CC02" "$max_iterations" "$cooldown"
                 sleep 2
                 start_agent "CC03" "$max_iterations" "$cooldown"
-            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ]; then
+                sleep 2
+                start_agent "CC04" "$max_iterations" "$cooldown"
+                sleep 2
+                start_agent "CC05" "$max_iterations" "$cooldown"
+            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ] || [ "$target" = "CC04" ] || [ "$target" = "CC05" ]; then
                 start_agent "$target" "$max_iterations" "$cooldown"
             else
                 print_error "Invalid target: $target"
@@ -204,7 +208,9 @@ main() {
                 stop_agent "CC01"
                 stop_agent "CC02"
                 stop_agent "CC03"
-            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ]; then
+                stop_agent "CC04"
+                stop_agent "CC05"
+            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ] || [ "$target" = "CC04" ] || [ "$target" = "CC05" ]; then
                 stop_agent "$target"
             else
                 print_error "Invalid target: $target"
@@ -220,7 +226,11 @@ main() {
                 check_agent_status "CC02"
                 echo ""
                 check_agent_status "CC03"
-            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ]; then
+                echo ""
+                check_agent_status "CC04"
+                echo ""
+                check_agent_status "CC05"
+            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ] || [ "$target" = "CC04" ] || [ "$target" = "CC05" ]; then
                 check_agent_status "$target"
             else
                 print_error "Invalid target: $target"
@@ -236,7 +246,11 @@ main() {
                 show_agent_metrics "CC02"
                 echo ""
                 show_agent_metrics "CC03"
-            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ]; then
+                echo ""
+                show_agent_metrics "CC04"
+                echo ""
+                show_agent_metrics "CC05"
+            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ] || [ "$target" = "CC04" ] || [ "$target" = "CC05" ]; then
                 show_agent_metrics "$target"
             else
                 print_error "Invalid target: $target"
@@ -250,13 +264,19 @@ main() {
                 stop_agent "CC01"
                 stop_agent "CC02"
                 stop_agent "CC03"
+                stop_agent "CC04"
+                stop_agent "CC05"
                 sleep 2
                 start_agent "CC01" "$max_iterations" "$cooldown"
                 sleep 2
                 start_agent "CC02" "$max_iterations" "$cooldown"
                 sleep 2
                 start_agent "CC03" "$max_iterations" "$cooldown"
-            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ]; then
+                sleep 2
+                start_agent "CC04" "$max_iterations" "$cooldown"
+                sleep 2
+                start_agent "CC05" "$max_iterations" "$cooldown"
+            elif [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ] || [ "$target" = "CC04" ] || [ "$target" = "CC05" ]; then
                 stop_agent "$target"
                 sleep 2
                 start_agent "$target" "$max_iterations" "$cooldown"
@@ -268,7 +288,7 @@ main() {
             ;;
         
         "logs")
-            if [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ]; then
+            if [ "$target" = "CC01" ] || [ "$target" = "CC02" ] || [ "$target" = "CC03" ] || [ "$target" = "CC04" ] || [ "$target" = "CC05" ]; then
                 local log_file="/tmp/agent-logs/agent-$target.log"
                 if [ -f "$log_file" ]; then
                     tail -f "$log_file"

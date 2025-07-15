@@ -41,6 +41,22 @@
       "sonnet_model": "claude-3-5-sonnet-20241022",
       "max_task_duration": 1800,
       "cooldown_time": 60
+    },
+    "CC04": {
+      "specialization": "DevOps Specialist",
+      "labels": ["claude-code-task", "devops", "cc04"],
+      "priority_keywords": ["devops", "ci", "cd", "docker", "kubernetes", "deployment"],
+      "sonnet_model": "claude-3-5-sonnet-20241022",
+      "max_task_duration": 2400,
+      "cooldown_time": 90
+    },
+    "CC05": {
+      "specialization": "Security Specialist",
+      "labels": ["claude-code-task", "security", "cc05"],
+      "priority_keywords": ["security", "auth", "vulnerability", "encryption", "audit"],
+      "sonnet_model": "claude-3-5-sonnet-20241022",
+      "max_task_duration": 2400,
+      "cooldown_time": 90
     }
   },
   "monitoring": {

@@ -77,7 +77,6 @@ pydantic>=2.0.0
 
 # Database and storage
 sqlalchemy>=2.0.0
-sqlite3
 
 # GitHub integration
 PyGithub>=1.59.0

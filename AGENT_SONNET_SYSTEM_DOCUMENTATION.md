@@ -50,15 +50,13 @@ Claude Max plan利用制限対策として開発された、エージェント�
 ### ファイル構成
 
 ```
-ITDO_ERP2/
-├── scripts/
-│   ├── agent-config/
-│   │   ├── sonnet-default.sh           # 基本設定
-│   │   └── agent-startup-template.md   # 起動テンプレート
-│   └── start-agent-sonnet.sh          # 起動スクリプト
-├── AGENT_SONNET_INSTRUCTIONS.md       # 使用指示書
-└── docs/
-    └── AGENT_SONNET_SYSTEM_DOCUMENTATION.md  # 本文書
+claude-code-cluster/
+├── agent-config/
+│   ├── sonnet-default.sh           # 基本設定
+│   └── agent-startup-template.md   # 起動テンプレート
+├── start-agent-sonnet.sh          # 起動スクリプト
+├── AGENT_SONNET_INSTRUCTIONS.md   # 使用指示書
+└── AGENT_SONNET_SYSTEM_DOCUMENTATION.md  # 本文書
 ```
 
 ### 設定ファイル詳細
@@ -194,7 +192,7 @@ echo $MANAGER_CALL_ENABLED
 
 # 修正
 export MANAGER_CALL_ENABLED=true
-source scripts/agent-config/sonnet-default.sh
+source agent-config/sonnet-default.sh
 ```
 
 #### パフォーマンスログが記録されない

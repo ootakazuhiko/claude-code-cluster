@@ -10,7 +10,7 @@
 ```bash
 # Auto-execute on startup
 export CLAUDE_MODEL="claude-3-5-sonnet-20241022"
-export AGENT_MODE="implementation"
+export CLAUDE_AGENT_MODE="implementation"
 export ESCALATION_ENABLED=true
 ```
 
@@ -45,7 +45,7 @@ export ESCALATION_ENABLED=true
 ### Escalation Command
 ```bash
 # Use this format when escalating
-/escalate --issue="具体的な問題" --context="現在の状況" --tried="試行した解決策"
+escalate "具体的な問題" "現在の状況" "試行した解決策"
 ```
 
 ## Performance Targets

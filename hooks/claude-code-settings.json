@@ -1,0 +1,66 @@
+{
+  "hooks": {
+    "agent-auto-loop": {
+      "description": "Agent Auto-Loop Hook for autonomous task processing",
+      "command": "python3 hooks/agent-auto-loop.py",
+      "enabled": true,
+      "triggers": {
+        "on_session_start": true,
+        "on_task_completion": true,
+        "on_idle": true
+      },
+      "parameters": {
+        "max_iterations": null,
+        "cooldown_time": 60,
+        "auto_assign": true,
+        "escalation_threshold": 1800
+      }
+    }
+  },
+  "agent_configurations": {
+    "CC01": {
+      "specialization": "Backend Specialist",
+      "labels": ["claude-code-task", "cc01"],
+      "priority_keywords": ["backend", "api", "database", "python", "fastapi"],
+      "sonnet_model": "claude-3-5-sonnet-20241022",
+      "max_task_duration": 1800,
+      "cooldown_time": 60
+    },
+    "CC02": {
+      "specialization": "Database Specialist", 
+      "labels": ["claude-code-task", "cc02"],
+      "priority_keywords": ["database", "sql", "performance", "migration", "query"],
+      "sonnet_model": "claude-3-5-sonnet-20241022",
+      "max_task_duration": 1800,
+      "cooldown_time": 60
+    },
+    "CC03": {
+      "specialization": "Frontend Specialist",
+      "labels": ["claude-code-task", "cc03"],
+      "priority_keywords": ["frontend", "ui", "react", "typescript", "css"],
+      "sonnet_model": "claude-3-5-sonnet-20241022",
+      "max_task_duration": 1800,
+      "cooldown_time": 60
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "log_level": "INFO",
+    "metrics_collection": true,
+    "performance_tracking": true,
+    "database_path": "/tmp/agent-metrics.db"
+  },
+  "escalation": {
+    "enabled": true,
+    "manager_model": "claude-3-opus-20240229",
+    "auto_escalate_on_timeout": true,
+    "escalation_keywords": ["escalate", "complex", "blocked", "help needed", "manager"],
+    "max_escalation_attempts": 3
+  },
+  "quality_gates": {
+    "test_coverage_minimum": 80,
+    "performance_threshold": 200,
+    "security_scan_required": true,
+    "code_quality_check": true
+  }
+}

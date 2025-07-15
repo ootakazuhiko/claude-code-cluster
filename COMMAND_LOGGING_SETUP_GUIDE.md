@@ -35,7 +35,7 @@ ls -la hooks/
 # - command_logger.py
 # - view-command-logs.py
 # - universal-agent-auto-loop-with-logging.py
-# - COMMAND_LOGGING_README.md
+# - hooks/COMMAND_LOGGING_README.md
 ```
 
 ### 3. 実行権限の付与

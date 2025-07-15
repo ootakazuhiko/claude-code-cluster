@@ -368,7 +368,7 @@ fi
 
 # 完了メッセージ
 echo ""
-echo "=" * 60
+printf '=%.0s' {1..60}; echo
 success "Integrated test completed!"
 echo ""
 echo "📁 Test location: $TEST_DIR"

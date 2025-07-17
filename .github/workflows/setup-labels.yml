@@ -1,54 +1,130 @@
-# Setup Processing Labels
-# Creates all necessary labels for the processing system
-name: Setup Processing Labels
+name: Setup ITDO_ERP2 Processing Labels
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/setup-labels.yml'
 
 jobs:
   create-labels:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    
     steps:
-      - name: Create Labels
+      - name: Create ITDO_ERP2 Processing Labels
         uses: actions/github-script@v7
         with:
           script: |
+            console.log('Starting ITDO_ERP2 label creation...');
+            
             const labels = [
-              // Processing trigger labels
-              { name: 'claude-code-ready', color: '0E8A16', description: 'Ready for automated processing' },
-              { name: 'claude-code-urgent', color: 'D93F0B', description: 'Urgent automated processing' },
-              { name: 'claude-code-backend', color: '1D76DB', description: 'Backend specialized processing' },
-              { name: 'claude-code-frontend', color: '5319E7', description: 'Frontend specialized processing' },
-              { name: 'claude-code-testing', color: 'FBCA04', description: 'Testing specialized processing' },
-              { name: 'claude-code-infrastructure', color: 'C5DEF5', description: 'Infrastructure specialized processing' },
-              
+              // Processing labels
+              {
+                name: 'claude-code-ready',
+                color: '0E8A16',
+                description: 'Ready for automated processing'
+              },
+              {
+                name: 'claude-code-urgent',
+                color: 'D93F0B',
+                description: 'Urgent automated processing'
+              },
+              {
+                name: 'claude-code-backend',
+                color: '1D76DB',
+                description: 'Backend (FastAPI/Python) specialized processing'
+              },
+              {
+                name: 'claude-code-frontend',
+                color: '5319E7',
+                description: 'Frontend (React/TypeScript) specialized processing'
+              },
+              {
+                name: 'claude-code-testing',
+                color: 'FBCA04',
+                description: 'Testing (pytest/vitest) specialized processing'
+              },
+              {
+                name: 'claude-code-infrastructure',
+                color: 'C5DEF5',
+                description: 'Infrastructure (CI/CD/Deployment) specialized processing'
+              },
+              {
+                name: 'claude-code-database',
+                color: '006B75',
+                description: 'Database (PostgreSQL/Alembic) specialized processing'
+              },
+              {
+                name: 'claude-code-security',
+                color: 'B60205',
+                description: 'Security (Auth/Keycloak) specialized processing'
+              },
               // Status labels
-              { name: 'claude-code-waiting', color: 'BFD4F2', description: 'Waiting for processing label' },
-              { name: 'claude-code-processing', color: '0052CC', description: 'Currently being processed' },
-              { name: 'claude-code-completed', color: '0E8A16', description: 'Processing completed' },
-              { name: 'claude-code-failed', color: 'B60205', description: 'Processing failed' },
-              
-              // Report labels
-              { name: 'report', color: 'F9D0C4', description: 'Automated report' },
-              { name: 'automated', color: 'E1E4E8', description: 'Automated process' }
+              {
+                name: 'claude-code-waiting',
+                color: 'BFD4F2',
+                description: 'Waiting for processing label'
+              },
+              {
+                name: 'claude-code-processing',
+                color: '0052CC',
+                description: 'Currently being processed'
+              },
+              {
+                name: 'claude-code-completed',
+                color: '0E8A16',
+                description: 'Processing completed'
+              },
+              {
+                name: 'claude-code-failed',
+                color: 'B60205',
+                description: 'Processing failed'
+              },
+              // ITDO_ERP2 specific labels
+              {
+                name: 'project-management',
+                color: 'FEF2C0',
+                description: 'Project management related'
+              },
+              {
+                name: 'tdd-required',
+                color: '5319E7',
+                description: 'Test-Driven Development required'
+              },
+              {
+                name: 'type-safety',
+                color: '1D76DB',
+                description: 'Type safety consideration needed'
+              },
+              {
+                name: 'performance',
+                color: 'D93F0B',
+                description: 'Performance optimization needed'
+              }
             ];
             
-            console.log('Creating labels for claude-code-cluster processing system...\n');
+            const results = {
+              created: [],
+              updated: [],
+              unchanged: [],
+              failed: []
+            };
             
             for (const label of labels) {
               try {
-                await github.rest.issues.createLabel({
+                // Try to get existing label
+                const existing = await github.rest.issues.getLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  ...label
-                });
-                console.log(`✅ Created label: ${label.name}`);
-              } catch (e) {
-                if (e.status === 422) {
-                  console.log(`ℹ️  Label already exists: ${label.name}`);
-                  
-                  // Try to update the existing label
-                  try {
+                  name: label.name
+                }).catch(() => null);
+                
+                if (existing) {
+                  // Update if different
+                  if (existing.data.color !== label.color || 
+                      existing.data.description !== label.description) {
                     await github.rest.issues.updateLabel({
                       owner: context.repo.owner,
                       repo: context.repo.repo,
@@ -56,18 +132,93 @@ jobs:
                       color: label.color,
                       description: label.description
                     });
-                    console.log(`✅ Updated existing label: ${label.name}`);
-                  } catch (updateError) {
-                    console.log(`❌ Failed to update label: ${label.name}`);
+                    results.updated.push(label.name);
+                    console.log(`✅ Updated label: ${label.name}`);
+                  } else {
+                    results.unchanged.push(label.name);
+                    console.log(`✓ Label unchanged: ${label.name}`);
                   }
                 } else {
-                  console.log(`❌ Error creating label ${label.name}: ${e.message}`);
+                  // Create new label
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label.name,
+                    color: label.color,
+                    description: label.description
+                  });
+                  results.created.push(label.name);
+                  console.log(`✅ Created label: ${label.name}`);
                 }
+              } catch (error) {
+                results.failed.push(label.name);
+                console.error(`❌ Failed to process label ${label.name}:`, error.message);
               }
             }
             
-            console.log('\nLabel setup complete!');
-            console.log('\nNext steps:');
-            console.log('1. Apply processing labels to issues that need automation');
-            console.log('2. Monitor the Actions tab for processing results');
-            console.log('3. Check daily reports for processing statistics');
+            // Summary
+            console.log('\n📊 Summary:');
+            console.log(`- Created: ${results.created.length}`);
+            console.log(`- Updated: ${results.updated.length}`);
+            console.log(`- Unchanged: ${results.unchanged.length}`);
+            console.log(`- Failed: ${results.failed.length}`);
+            
+            // Create summary issue comment if triggered manually
+            if (context.eventName === 'workflow_dispatch') {
+              const summaryBody = `## 🏷️ ITDO_ERP2 Label Setup Complete
+              
+              ### Summary
+              - ✨ **Created**: ${results.created.length > 0 ? results.created.join(', ') : 'None'}
+              - 🔄 **Updated**: ${results.updated.length > 0 ? results.updated.join(', ') : 'None'}
+              - ✓ **Unchanged**: ${results.unchanged.length}
+              - ❌ **Failed**: ${results.failed.length > 0 ? results.failed.join(', ') : 'None'}
+              
+              ### Label Categories
+              
+              **Processing Labels** (add one to trigger automation):
+              - \`claude-code-ready\` - General processing
+              - \`claude-code-urgent\` - High priority
+              - \`claude-code-backend\` - FastAPI/Python tasks
+              - \`claude-code-frontend\` - React/TypeScript tasks
+              - \`claude-code-testing\` - Test creation/updates
+              - \`claude-code-infrastructure\` - CI/CD/Deployment
+              - \`claude-code-database\` - DB schema/migrations
+              - \`claude-code-security\` - Auth/Security tasks
+              
+              **Status Labels** (automatically managed):
+              - \`claude-code-waiting\` - Needs processing label
+              - \`claude-code-processing\` - Currently processing
+              - \`claude-code-completed\` - Successfully processed
+              - \`claude-code-failed\` - Processing failed
+              
+              **ITDO_ERP2 Standards**:
+              - \`tdd-required\` - Enforce TDD approach
+              - \`type-safety\` - Strict typing needed
+              - \`performance\` - Performance focus
+              
+              ### Next Steps
+              1. Add processing labels to issues that need automation
+              2. Monitor the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions) for processing results
+              3. Check daily reports for processing statistics
+              
+              The ITDO_ERP2 label-based processing system is now ready! 🚀`;
+              
+              // Find the most recent issue to comment on
+              const issues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                per_page: 1,
+                sort: 'created',
+                direction: 'desc'
+              });
+              
+              if (issues.data.length > 0) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issues.data[0].number,
+                  body: summaryBody
+                });
+              }
+            }

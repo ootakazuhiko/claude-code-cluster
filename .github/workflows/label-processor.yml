@@ -1,0 +1,175 @@
+# Label-Based Issue Processor
+# This workflow processes issues based on their labels
+name: Label-Based Issue Processor
+
+on:
+  issues:
+    types: [opened, labeled, unlabeled, reopened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  evaluate-labels:
+    runs-on: ubuntu-latest
+    outputs:
+      should_process: ${{ steps.check.outputs.should_process }}
+      processing_type: ${{ steps.check.outputs.processing_type }}
+      priority: ${{ steps.check.outputs.priority }}
+    
+    steps:
+      - name: Check Processing Labels
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.issue;
+            const labels = context.payload.issue.labels.map(l => l.name);
+            
+            // 除外ラベルチェック
+            const excludeLabels = ['discussion', 'design', 'on-hold', 'manual-only'];
+            if (labels.some(label => excludeLabels.includes(label))) {
+              core.setOutput('should_process', 'false');
+              return;
+            }
+            
+            // 処理ラベルチェック
+            const processingLabels = {
+              'claude-code-ready': { type: 'general', priority: 'medium' },
+              'claude-code-urgent': { type: 'general', priority: 'high' },
+              'claude-code-backend': { type: 'backend', priority: 'medium' },
+              'claude-code-frontend': { type: 'frontend', priority: 'medium' },
+              'claude-code-testing': { type: 'testing', priority: 'medium' },
+              'claude-code-infrastructure': { type: 'infrastructure', priority: 'medium' }
+            };
+            
+            for (const [label, config] of Object.entries(processingLabels)) {
+              if (labels.includes(label)) {
+                core.setOutput('should_process', 'true');
+                core.setOutput('processing_type', config.type);
+                core.setOutput('priority', config.priority);
+                return;
+              }
+            }
+            
+            core.setOutput('should_process', 'wait');
+
+  process-issue:
+    needs: evaluate-labels
+    if: needs.evaluate-labels.outputs.should_process == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Add Processing Label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['claude-code-processing']
+            });
+      
+      - name: Process Based on Type
+        id: process
+        run: |
+          case "${{ needs.evaluate-labels.outputs.processing_type }}" in
+            backend)
+              echo "Processing backend issue..."
+              # バックエンド処理ロジック
+              echo "Backend issue #${{ github.event.issue.number }} analyzed"
+              ;;
+            frontend)
+              echo "Processing frontend issue..."
+              # フロントエンド処理ロジック
+              echo "Frontend issue #${{ github.event.issue.number }} analyzed"
+              ;;
+            testing)
+              echo "Processing testing issue..."
+              # テスト処理ロジック
+              echo "Testing issue #${{ github.event.issue.number }} analyzed"
+              ;;
+            infrastructure)
+              echo "Processing infrastructure issue..."
+              # インフラ処理ロジック
+              echo "Infrastructure issue #${{ github.event.issue.number }} analyzed"
+              ;;
+            *)
+              echo "Processing general issue..."
+              # 汎用処理ロジック
+              echo "General issue #${{ github.event.issue.number }} analyzed"
+              ;;
+          esac
+      
+      - name: Update Issue Status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success = '${{ steps.process.outcome }}' === 'success';
+            
+            // 処理中ラベル削除
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'claude-code-processing'
+              });
+            } catch (e) {}
+            
+            // 結果ラベル追加
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [success ? 'claude-code-completed' : 'claude-code-failed']
+            });
+            
+            // コメント追加
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: success 
+                ? '✅ Processing completed successfully!'
+                : '❌ Processing failed. Please check the logs.'
+            });
+
+  handle-waiting:
+    needs: evaluate-labels
+    if: needs.evaluate-labels.outputs.should_process == 'wait'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Add Waiting Label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // 既存のclaude-codeラベルをチェック
+            const labels = context.payload.issue.labels.map(l => l.name);
+            const hasClaudeLabel = labels.some(l => l.startsWith('claude-code-'));
+            
+            if (!hasClaudeLabel) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['claude-code-waiting']
+              });
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '⏳ This issue is waiting for a processing label. Please add one of the following labels:\n' +
+                      '- `claude-code-ready` - General processing\n' +
+                      '- `claude-code-backend` - Backend specialized processing\n' +
+                      '- `claude-code-frontend` - Frontend specialized processing\n' +
+                      '- `claude-code-testing` - Testing specialized processing\n' +
+                      '- `claude-code-infrastructure` - Infrastructure specialized processing'
+              });
+            }

@@ -1,0 +1,73 @@
+# Setup Processing Labels
+# Creates all necessary labels for the processing system
+name: Setup Processing Labels
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = [
+              // Processing trigger labels
+              { name: 'claude-code-ready', color: '0E8A16', description: 'Ready for automated processing' },
+              { name: 'claude-code-urgent', color: 'D93F0B', description: 'Urgent automated processing' },
+              { name: 'claude-code-backend', color: '1D76DB', description: 'Backend specialized processing' },
+              { name: 'claude-code-frontend', color: '5319E7', description: 'Frontend specialized processing' },
+              { name: 'claude-code-testing', color: 'FBCA04', description: 'Testing specialized processing' },
+              { name: 'claude-code-infrastructure', color: 'C5DEF5', description: 'Infrastructure specialized processing' },
+              
+              // Status labels
+              { name: 'claude-code-waiting', color: 'BFD4F2', description: 'Waiting for processing label' },
+              { name: 'claude-code-processing', color: '0052CC', description: 'Currently being processed' },
+              { name: 'claude-code-completed', color: '0E8A16', description: 'Processing completed' },
+              { name: 'claude-code-failed', color: 'B60205', description: 'Processing failed' },
+              
+              // Report labels
+              { name: 'report', color: 'F9D0C4', description: 'Automated report' },
+              { name: 'automated', color: 'E1E4E8', description: 'Automated process' }
+            ];
+            
+            console.log('Creating labels for claude-code-cluster processing system...\n');
+            
+            for (const label of labels) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ...label
+                });
+                console.log(`✅ Created label: ${label.name}`);
+              } catch (e) {
+                if (e.status === 422) {
+                  console.log(`ℹ️  Label already exists: ${label.name}`);
+                  
+                  // Try to update the existing label
+                  try {
+                    await github.rest.issues.updateLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: label.name,
+                      color: label.color,
+                      description: label.description
+                    });
+                    console.log(`✅ Updated existing label: ${label.name}`);
+                  } catch (updateError) {
+                    console.log(`❌ Failed to update label: ${label.name}`);
+                  }
+                } else {
+                  console.log(`❌ Error creating label ${label.name}: ${e.message}`);
+                }
+              }
+            }
+            
+            console.log('\nLabel setup complete!');
+            console.log('\nNext steps:');
+            console.log('1. Apply processing labels to issues that need automation');
+            console.log('2. Monitor the Actions tab for processing results');
+            console.log('3. Check daily reports for processing statistics');

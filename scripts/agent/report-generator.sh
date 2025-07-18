@@ -6,7 +6,7 @@ set -e
 
 # Configuration
 AGENT_NAME="${AGENT_NAME:-}"
-LOG_FILE="${LOG_FILE:-/tmp/agent-report-generator.log}"
+LOG_FILE="${LOG_FILE:-$WORKSPACE/.agent/logs/report-generator.log}"
 
 # Logging function
 log() {
@@ -120,7 +120,7 @@ submit_report() {
 # Check for stalled work
 check_work_status() {
     local issue_number="$1"
-    local work_file="/tmp/agent_work_${issue_number}.status"
+    local work_file="$WORKSPACE/.agent/state/work_${issue_number}.status"
     
     if [ -f "$work_file" ]; then
         local start_time=$(cat "$work_file")
@@ -201,8 +201,8 @@ main() {
     else
         # Get error details
         local error_details="Task execution failed. Check logs for details."
-        if [ -f "/tmp/agent_error_${issue_number}.log" ]; then
-            error_details=$(tail -n 20 "/tmp/agent_error_${issue_number}.log")
+        if [ -f "$WORKSPACE/.agent/logs/error_${issue_number}.log" ]; then
+            error_details=$(tail -n 20 "$WORKSPACE/.agent/logs/error_${issue_number}.log")
         fi
         
         local report=$(generate_failure_report "$issue_number" "$error_details")
@@ -212,7 +212,7 @@ main() {
     submit_report "$issue_number" "$report"
     
     # Clean up work status file
-    rm -f "/tmp/agent_work_${issue_number}.status"
+    rm -f "$WORKSPACE/.agent/state/work_${issue_number}.status"
     
     # Update issue labels if successful
     if [ "$success" = "true" ]; then

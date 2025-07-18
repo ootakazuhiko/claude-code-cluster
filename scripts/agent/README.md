@@ -55,7 +55,7 @@ The system provides standardized scripts for:
 
 - `LOOP_DELAY`: Seconds between instruction checks (default: 60)
 - `MAX_ITERATIONS`: Maximum loop iterations, 0=infinite (default: 0)
-- `LOG_FILE`: Path to log file (default: /tmp/agent-loop.log)
+- `LOG_FILE`: Path to log file (default: $WORKSPACE/.agent/logs/agent-loop.log)
 - `WORKSPACE`: Project workspace path (default: /home/work/ITDO_ERP2)
 
 ### Running in Background
@@ -137,10 +137,10 @@ The issue body should contain:
 Check agent status:
 ```bash
 # View logs
-tail -f /tmp/agent-loop.log
+tail -f $WORKSPACE/.agent/logs/agent-loop.log
 
 # Check active issues
-cat /tmp/agent_active_issue_CC01
+cat $WORKSPACE/.agent/state/active_issue_CC01
 
 # Monitor GitHub activity
 gh issue list --label cc01 --state open

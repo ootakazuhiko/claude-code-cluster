@@ -8,7 +8,7 @@ set -e
 AGENT_NAME="${AGENT_NAME:-}"
 ISSUE_LABEL="${ISSUE_LABEL:-}"
 WORKSPACE="${WORKSPACE:-/home/work/ITDO_ERP2}"
-LOG_FILE="${LOG_FILE:-/tmp/agent-instruction-handler.log}"
+LOG_FILE="${LOG_FILE:-$WORKSPACE/.agent/logs/instruction-handler.log}"
 
 # Logging function
 log() {
@@ -97,7 +97,7 @@ process_instruction() {
     report_status "$issue_number" "start" "Beginning work on: $title"
     
     # Save instruction for processing
-    echo "$body" > "/tmp/instruction_${issue_number}.md"
+    echo "$body" > "$WORKSPACE/.agent/instructions/instruction_${issue_number}.md"
     
     # Return task metadata
     echo "{\"issue\": $issue_number, \"type\": \"$task_type\", \"title\": \"$title\"}"
@@ -122,7 +122,7 @@ ${message}"
 
 # Check for stalled processes
 check_stagnation() {
-    local last_activity_file="/tmp/agent_last_activity_${AGENT_NAME}"
+    local last_activity_file="$WORKSPACE/.agent/state/last_activity_${AGENT_NAME}"
     local stagnation_threshold=1800  # 30 minutes
     
     if [ -f "$last_activity_file" ]; then

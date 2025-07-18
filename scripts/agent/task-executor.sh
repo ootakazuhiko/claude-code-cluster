@@ -7,7 +7,7 @@ set -e
 # Configuration
 AGENT_NAME="${AGENT_NAME:-}"
 WORKSPACE="${WORKSPACE:-/home/work/ITDO_ERP2}"
-LOG_FILE="${LOG_FILE:-/tmp/agent-task-executor.log}"
+LOG_FILE="${LOG_FILE:-$WORKSPACE/.agent/logs/task-executor.log}"
 
 # Logging function
 log() {
@@ -17,7 +17,7 @@ log() {
 # Execute test task
 execute_test_task() {
     local issue_number="$1"
-    local instruction_file="/tmp/instruction_${issue_number}.md"
+    local instruction_file="$WORKSPACE/.agent/instructions/instruction_${issue_number}.md"
     
     log "Executing test task from issue #$issue_number"
     
@@ -54,7 +54,7 @@ execute_test_task() {
 # Execute fix task
 execute_fix_task() {
     local issue_number="$1"
-    local instruction_file="/tmp/instruction_${issue_number}.md"
+    local instruction_file="$WORKSPACE/.agent/instructions/instruction_${issue_number}.md"
     
     log "Executing fix task from issue #$issue_number"
     
@@ -101,7 +101,7 @@ execute_fix_task() {
 # Execute implementation task
 execute_implement_task() {
     local issue_number="$1"
-    local instruction_file="/tmp/instruction_${issue_number}.md"
+    local instruction_file="$WORKSPACE/.agent/instructions/instruction_${issue_number}.md"
     
     log "Executing implementation task from issue #$issue_number"
     
@@ -132,13 +132,13 @@ execute_frontend_fix() {
     cd frontend
     
     # Run type check and fix common issues
-    npm run typecheck 2>&1 | tee /tmp/typecheck_output.txt || true
+    npm run typecheck 2>&1 | tee $WORKSPACE/.agent/logs/typecheck_output.txt || true
     
     # Auto-fix linting issues
     npm run lint -- --fix
     
     # Fix specific TypeScript errors
-    if grep -q "TS2339" /tmp/typecheck_output.txt; then
+    if grep -q "TS2339" $WORKSPACE/.agent/logs/typecheck_output.txt; then
         log "Fixing TypeScript property access errors"
         # Add type assertions or interface updates
     fi
@@ -188,7 +188,7 @@ execute_backend_fix() {
     cd backend
     
     # Run mypy and fix issues
-    uv run mypy --strict app/ 2>&1 | tee /tmp/mypy_output.txt || true
+    uv run mypy --strict app/ 2>&1 | tee $WORKSPACE/.agent/logs/mypy_output.txt || true
     
     # Auto-fix common issues
     uv run ruff check . --fix

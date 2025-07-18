@@ -9,7 +9,7 @@ AGENT_NAME="${1:-}"
 ISSUE_LABEL="${2:-}"
 LOOP_DELAY="${LOOP_DELAY:-60}"  # Delay between loops in seconds
 MAX_ITERATIONS="${MAX_ITERATIONS:-0}"  # 0 = infinite
-LOG_FILE="${LOG_FILE:-/tmp/agent-loop.log}"
+LOG_FILE="${LOG_FILE:-$WORKSPACE/.agent/logs/agent-loop.log}"
 
 # Export for child scripts
 export AGENT_NAME
@@ -55,7 +55,7 @@ cleanup() {
     log "Received interrupt signal, cleaning up..."
     
     # Mark any in-progress work
-    local active_issue=$(cat /tmp/agent_active_issue_${AGENT_NAME} 2>/dev/null)
+    local active_issue=$(cat $WORKSPACE/.agent/state/active_issue_${AGENT_NAME} 2>/dev/null)
     if [ -n "$active_issue" ]; then
         gh issue comment "$active_issue" --body "## ${AGENT_NAME} Status
         
@@ -63,7 +63,7 @@ Agent loop interrupted. Work may be incomplete.
 Time: $(date '+%Y-%m-%d %H:%M:%S JST')" 2>/dev/null || true
     fi
     
-    rm -f /tmp/agent_active_issue_${AGENT_NAME}
+    rm -f $WORKSPACE/.agent/state/active_issue_${AGENT_NAME}
     exit 0
 }
 
@@ -87,11 +87,11 @@ process_instruction() {
     log "Processing issue #$issue_number"
     
     # Mark as active
-    echo "$issue_number" > /tmp/agent_active_issue_${AGENT_NAME}
+    echo "$issue_number" > $WORKSPACE/.agent/state/active_issue_${AGENT_NAME}
     
     # Step 2: Execute task
     log "Executing task..."
-    local task_result=$("$TASK_EXECUTOR" "$task_info" 2>&1 | tee /tmp/agent_task_output_${issue_number}.log | tail -1)
+    local task_result=$("$TASK_EXECUTOR" "$task_info" 2>&1 | tee $WORKSPACE/.agent/logs/task_output_${issue_number}.log | tail -1)
     
     # Ensure we have valid JSON result
     if ! echo "$task_result" | jq . >/dev/null 2>&1; then
@@ -104,9 +104,9 @@ process_instruction() {
     "$REPORT_GENERATOR" "$task_result"
     
     # Clean up
-    rm -f /tmp/agent_active_issue_${AGENT_NAME}
-    rm -f /tmp/instruction_${issue_number}.md
-    rm -f /tmp/agent_task_output_${issue_number}.log
+    rm -f $WORKSPACE/.agent/state/active_issue_${AGENT_NAME}
+    rm -f $WORKSPACE/.agent/instructions/instruction_${issue_number}.md
+    rm -f $WORKSPACE/.agent/logs/task_output_${issue_number}.log
     
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
@@ -194,6 +194,12 @@ Agent loop initialized and ready to process instructions.
 # Main execution
 main() {
     check_prerequisites
+    
+    # Create necessary directories
+    mkdir -p "$WORKSPACE/.agent/logs"
+    mkdir -p "$WORKSPACE/.agent/state"
+    mkdir -p "$WORKSPACE/.agent/instructions"
+    
     initialize_agent
     
     log "Starting continuous loop for $AGENT_NAME"

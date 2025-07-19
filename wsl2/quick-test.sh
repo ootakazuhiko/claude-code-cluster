@@ -30,7 +30,23 @@ claude-cluster status
 # Test router
 echo ""
 echo "Testing central router..."
-curl -s http://localhost:8888/health | jq .
+response=$(curl -s -w "\n%{http_code}" http://localhost:8888/health 2>/dev/null)
+http_code=$(echo "$response" | tail -n1)
+body=$(echo "$response" | head -n-1)
+
+if [[ "$http_code" -ne 200 ]]; then
+    echo "❌ Health endpoint returned HTTP status $http_code"
+    echo "$body"
+else
+    # Try to parse as JSON
+    if echo "$body" | python3 -m json.tool > /dev/null 2>&1; then
+        echo "✅ Health endpoint returned valid JSON:"
+        echo "$body" | python3 -m json.tool
+    else
+        echo "❌ Health endpoint returned invalid JSON:"
+        echo "$body"
+    fi
+fi
 
 # Test task submission
 echo ""

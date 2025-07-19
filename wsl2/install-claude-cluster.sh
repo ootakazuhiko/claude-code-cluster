@@ -15,6 +15,7 @@ NC='\033[0m' # No Color
 CLUSTER_HOME="/home/claude-cluster"
 CLAUDE_VERSION="latest"
 PYTHON_VERSION="3.12"
+REPO_URL="https://github.com/ootakazuhiko/claude-code-cluster.git"
 
 # Logging
 LOG_FILE="/tmp/claude-cluster-install-$(date +%Y%m%d_%H%M%S).log"
@@ -93,11 +94,11 @@ install_claude() {
         print_info "Installing Claude Code CLI..."
         # Placeholder for actual Claude installation
         # In real implementation, this would download and install Claude
-        curl -sSL https://claude.ai/install.sh | bash || {
-            print_error "Failed to install Claude Code. Please install manually."
-            print_info "Visit: https://claude.ai/code for installation instructions"
-            return 1
-        }
+        # Note: Claude Code installation placeholder
+        # In production, replace with actual installation method
+        print_info "Claude Code installation would happen here"
+        print_info "Visit: https://claude.ai/code for installation instructions"
+        # For now, we'll continue with the setup assuming Claude is installed
     else
         print_success "Claude Code already installed"
     fi
@@ -187,7 +188,7 @@ install_hook_system() {
     
     # Download hook system from repository
     cd /tmp
-    git clone https://github.com/ootakazuhiko/claude-code-cluster.git
+    git clone "$REPO_URL"
     
     # Install hooks for each agent
     for agent in cc01 cc02 cc03; do
@@ -544,6 +545,7 @@ start_router() {
     fi
     
     cd "$CLUSTER_HOME"
+    mkdir -p shared/logs
     nohup python3 scripts/management/central-router.py > shared/logs/router.log 2>&1 &
     echo -e "${GREEN}Central router started${NC}"
 }
@@ -560,7 +562,7 @@ show_status() {
     
     # Check router
     echo -n "Central Router: "
-    if curl -s http://localhost:8888/health > /dev/null 2>&1; then
+    if curl -s --connect-timeout 5 --max-time 10 http://localhost:8888/health > /dev/null 2>&1; then
         echo -e "${GREEN}Running${NC}"
     else
         echo -e "${RED}Stopped${NC}"
@@ -579,9 +581,9 @@ show_status() {
     echo ""
     
     # Show agent health from router
-    if curl -s http://localhost:8888/health > /dev/null 2>&1; then
+    if curl -s --connect-timeout 5 --max-time 10 http://localhost:8888/health > /dev/null 2>&1; then
         echo -e "${BLUE}Agent Health:${NC}"
-        curl -s http://localhost:8888/agents/status | jq -r 'to_entries | .[] | "\(.key): \(.value.status)"'
+        curl -s --connect-timeout 5 --max-time 10 http://localhost:8888/agents/status | python3 -m json.tool 2>/dev/null | grep -E '"(CC[0-9]+|status)"' || echo "Unable to fetch agent status"
     fi
 }
 
@@ -647,7 +649,7 @@ case "$COMMAND" in
     update)
         echo "Updating Claude Code Cluster..."
         cd /tmp
-        git clone https://github.com/ootakazuhiko/claude-code-cluster.git
+        git clone "$REPO_URL"
         # Update logic here
         echo "Update complete"
         ;;
@@ -811,7 +813,12 @@ function Send-ClaudeTask {
             timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
         } | ConvertTo-Json
         
-        $task | wsl -d Ubuntu -- /usr/local/bin/claude-cluster task -
+        # Save task to temporary file and submit
+        $tempFile = [System.IO.Path]::GetTempFileName()
+        $task | Out-File -FilePath $tempFile -Encoding UTF8
+        $wslPath = wsl -d Ubuntu -- wslpath $tempFile
+        wsl -d Ubuntu -- /usr/local/bin/claude-cluster task $wslPath
+        Remove-Item $tempFile
     }
 }
 

@@ -1,0 +1,51 @@
+git config --global user.name ootakazuhiko
+git config --global user.email ootakazuhiko@gmail.com
+gh auth login
+pwd
+ls
+cd /mnt/c/
+ls
+mkdir work
+cd work/
+ls
+claude 
+git clone https://github.com/itdojp/shirokane-app-site-test-fork.git
+cd shirokane-app-site-test-fork/
+claude 
+cd /mnt/c/work/
+ls
+cd shirokane-app-site-test-fork/
+claude -r
+cd ..
+mkdir ClaudeCode
+cd ClaudeCode/
+git clone https://github.com/itdojp/ITDO_ERP2.git
+cd ITDO_ERP2/
+claude
+cd /home/
+ls
+mkdir work
+cd work/
+git clone https://github.com/itdojp/ITDO_ERP2.git
+cd ITDO_ERP2/
+claude
+claude -r
+git config --global user.name ootakazuhiko
+git config --global user.email ootakazuhiko@gmail.com
+gh auth login
+cd /mnt/c/work/
+ls
+mkdir ITDO_NEWERP
+cd ITDO_NEWERP/
+claude 
+cd /home/work/
+ls
+cd ITDO_ERP2/
+ps -ax
+ps -axu
+cd /home/work/ITDO_ERP2/
+claude -r
+claude --help
+claude update
+claude -r
+claude update

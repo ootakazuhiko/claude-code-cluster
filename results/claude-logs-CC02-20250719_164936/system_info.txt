@@ -1,0 +1,52 @@
+=== System Information ===
+Agent: CC02
+Timestamp: Sat Jul 19 04:49:36 PM JST 2025
+Hostname: AH57U-001
+User: root
+
+=== OS Info ===
+Linux AH57U-001 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 24.04.2 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.2 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+=== Memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       2.3Gi        12Gi       3.5Mi       250Mi        13Gi
+Swap:          4.0Gi          0B       4.0Gi
+
+=== Disk Usage ===
+Filesystem      Size  Used Avail Use% Mounted on
+none            7.7G     0  7.7G   0% /usr/lib/modules/6.6.87.2-microsoft-standard-WSL2
+none            7.7G  4.0K  7.7G   1% /mnt/wsl
+drivers         102G   66G   36G  65% /usr/lib/wsl/drivers
+/dev/sdd       1007G  7.4G  949G   1% /
+none            7.7G   84K  7.7G   1% /mnt/wslg
+none            7.7G     0  7.7G   0% /usr/lib/wsl/lib
+rootfs          7.7G  2.7M  7.7G   1% /init
+none            7.7G  480K  7.7G   1% /run
+none            7.7G     0  7.7G   0% /run/lock
+none            7.7G   84K  7.7G   1% /run/shm
+none            7.7G   96K  7.7G   1% /mnt/wslg/versions.txt
+none            7.7G   96K  7.7G   1% /mnt/wslg/doc
+C:\             102G   66G   36G  65% /mnt/c
+D:\             188G   99M  188G   1% /mnt/d
+E:\             188G   99M  188G   1% /mnt/e
+tmpfs           7.7G  8.0K  7.7G   1% /run/user/0
+
+=== Process List ===
+root       41988  6.6 11.0 34361424 1770596 pts/0 Sl+ Jul18  90:34 claude
+
+=== Network Connections ===
+u_str ESTAB   0      0                                                          * 13322                  * 13323            
+u_str ESTAB   0      0                                                          * 13323                  * 13322            

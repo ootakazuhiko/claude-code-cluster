@@ -1,0 +1,65 @@
+cd /mnt/c/work/
+ls
+cd ClaudeCode/
+ls
+cd shirokane-app-site-test-fork/
+claude -r
+cd ..
+git clone https://github.com/ootakazuhiko/claude-actions-optimizer.git
+claude 
+curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-actions-optimizer/main/AUTO-SETUP-SCRIPT.sh | bash
+curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-actions-optimizer/main/install.sh | bash
+curl -sSL -o scripts/claude-coordinator.sh https://raw.githubusercontent.com/ootakazuhiko/claude-actions-optimizer/main/scripts/claude-coordinator.sh
+curl -sSL -o scripts/claude-identity.sh https://raw.githubusercontent.com/ootakazuhiko/claude-actions-optimizer/main/scripts/claude-identity.sh
+chmod +x scripts/claude-*.sh
+./scripts/claude-identity.sh setup
+chmod +x claude-actions-optimizer/scripts/claude-*.sh
+./claude-actions-optimizer/scripts/claude-identity.sh setup
+claude 
+ls
+cd claude-actions-optimizer/
+cd ..
+cd claude-actions-optimizer
+claude
+cd /mnt/c/work/
+ls
+cd ClaudeCode/
+ls
+cd ITDO_ERP/
+claude -r
+cd ..
+ls
+claude -r
+ls
+mv ITDO_ERP ITDO_ERP.old
+git clone https://github.com/ootakazuhiko/ITDO_ERP.git
+claude -r
+ls
+git clone https://github.com/itdojp/ITDO_ERP2.git
+cd ITDO_ERP
+claude 
+cd /home/
+ls
+mkdir work
+cd work/
+git clone https://github.com/itdojp/ITDO_ERP2.git
+claude
+ls
+ls -al
+claude -r
+cd ..
+ls
+cd work/
+ls
+cd ITDO_ERP2/
+ls -al
+claude -r
+cd ..
+claude -r
+pwd
+ls
+cd docs/
+ls
+cd ..
+claude -r
+exit

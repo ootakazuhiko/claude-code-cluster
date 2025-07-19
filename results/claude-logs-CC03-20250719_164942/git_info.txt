@@ -1,0 +1,141 @@
+=== Git Status ===
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   backend/app/api/v1/router.py
+	modified:   backend/app/schemas/budget.py
+	modified:   backend/app/services/budget_service.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	backend/CC01_FRONTEND_BUILD_OPTIMIZATION.md
+	backend/CC02_BACKEND_TEST_IMPROVEMENT.md
+	backend/CC02_STATUS_VERIFICATION_20250117_1510.md
+	backend/CC03_ALTERNATIVE_TASKS_COMPLETION_REPORT.md
+	backend/CC03_CICD_IMPROVEMENT_PROPOSAL.md
+	backend/CC03_CYCLE170_COMPLETE_REPORT.md
+	backend/CC03_CYCLE171_COMPLETE_REPORT.md
+	backend/CC03_CYCLE172_COMPLETE_REPORT.md
+	backend/CC03_CYCLE173_COMPLETE_REPORT.md
+	backend/CC03_CYCLE174_COMPLETE_REPORT.md
+	backend/CC03_CYCLE175_COMPLETE_REPORT.md
+	backend/CC03_CYCLE176_COMPLETE_REPORT.md
+	backend/CC03_CYCLE177_COMPLETE_REPORT.md
+	backend/CC03_CYCLE178_COMPLETE_REPORT.md
+	backend/CC03_CYCLE179_COMPLETE_REPORT.md
+	backend/CC03_CYCLE180_COMPLETE_REPORT.md
+	backend/CC03_CYCLE181_COMPLETE_REPORT.md
+	backend/CC03_CYCLE182_COMPLETE_REPORT.md
+	backend/CC03_CYCLE183_COMPLETE_REPORT.md
+	backend/CC03_CYCLE184_COMPLETE_REPORT.md
+	backend/CC03_CYCLE185_COMPLETE_REPORT.md
+	backend/CC03_CYCLE186_COMPLETE_REPORT.md
+	backend/CC03_CYCLE187_COMPLETE_REPORT.md
+	backend/CC03_CYCLE188_COMPLETE_REPORT.md
+	backend/CC03_CYCLE189_COMPLETE_REPORT.md
+	backend/CC03_CYCLE190_COMPLETE_REPORT.md
+	backend/CC03_CYCLE191_COMPLETE_REPORT.md
+	backend/CC03_CYCLE192_COMPLETE_REPORT.md
+	backend/CC03_CYCLE193_COMPLETE_REPORT.md
+	backend/CC03_CYCLE194_COMPLETE_REPORT.md
+	backend/CC03_CYCLE195_COMPLETE_REPORT.md
+	backend/CC03_CYCLE196_COMPLETE_REPORT.md
+	backend/CC03_CYCLE197_COMPLETE_REPORT.md
+	backend/CC03_CYCLE198_COMPLETE_REPORT.md
+	backend/CC03_CYCLE199_COMPLETE_REPORT.md
+	backend/CC03_CYCLE200_COMPLETE_REPORT.md
+	backend/CC03_CYCLE201_COMPLETE_REPORT.md
+	backend/CC03_CYCLE202_COMPLETE_REPORT.md
+	backend/CC03_CYCLE203_COMPLETE_REPORT.md
+	backend/CC03_CYCLE204_COMPLETE_REPORT.md
+	backend/CC03_CYCLE205_COMPLETE_REPORT.md
+	backend/CC03_CYCLE206_COMPLETE_REPORT.md
+	backend/CC03_CYCLE207_COMPLETE_REPORT.md
+	backend/CC03_CYCLE208_COMPLETE_REPORT.md
+	backend/CC03_CYCLE209_COMPLETE_REPORT.md
+	backend/CC03_CYCLE210_COMPLETE_REPORT.md
+	backend/CC03_CYCLE211_COMPLETE_REPORT.md
+	backend/CC03_CYCLE212_COMPLETE_REPORT.md
+	backend/CC03_CYCLE213_COMPLETE_REPORT.md
+	backend/CC03_CYCLE214_COMPLETE_REPORT.md
+	backend/CC03_CYCLE215_COMPLETE_REPORT.md
+	backend/CC03_CYCLE216_COMPLETE_REPORT.md
+	backend/CC03_CYCLE217_COMPLETE_REPORT.md
+	backend/CC03_CYCLE218_COMPLETE_REPORT.md
+	backend/CC03_CYCLE219_COMPLETE_REPORT.md
+	backend/CC03_CYCLE220_COMPLETE_REPORT.md
+	backend/CC03_CYCLE221_COMPLETE_REPORT.md
+	backend/CC03_CYCLE222_COMPLETE_REPORT.md
+	backend/CC03_CYCLE223_COMPLETE_REPORT.md
+	backend/CC03_CYCLE224_COMPLETE_REPORT.md
+	backend/CC03_CYCLE225_COMPLETE_REPORT.md
+	backend/CC03_CYCLE227_COMPLETE_REPORT.md
+	backend/CC03_EMERGENCY_MANAGER_ESCALATION.md
+	backend/CC03_EMERGENCY_PROTOCOL_VERIFICATION_CYCLE169.md
+	backend/CC03_EMERGENCY_TEST_RESULTS.md
+	backend/CC03_INFRASTRUCTURE_REQUIREMENTS.md
+	backend/CC03_TEST_OPTIMIZATION_RESEARCH.md
+	backend/DETAILED_CONVERSATION_SUMMARY_20250719.md
+	backend/EMERGENCY_RESOLUTION_STATUS_20250117_1505.md
+	backend/VICTORY_CELEBRATION_RESPONSE_20250117_1507.md
+	scripts/dev-automation.sh
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+=== Current Branch ===
+main
+
+=== Recent Commits (last 50) ===
+f1119fb 2025-07-18 22:16:53 +0900 Claude Code CC03: docs: CC03 priority system verification
+f637a66 2025-07-18 18:00:11 +0900 Claude Code CC03: emergency: CC03 Minimal CI for development unblock - Cycle 168
+0ea8d64 2025-07-18 17:47:29 +0900 Claude Code CC03: emergency: CC03 Emergency Response Protocol - 167 cycles monitoring complete
+8d0b9b6 2025-07-18 08:17:37 +0900 Claude Code CC03: CC03: Status confirmation test
+5b69f3f 2025-07-17 09:51:14 +0900 Kazuhiko OOTA: UIデザイン
+48fc302 2025-07-17 09:12:12 +0900 Claude Code CC03: fix: Complete code quality improvements and merge conflict resolution
+3fe423a 2025-07-17 02:58:28 +0900 Kazuhiko OOTA: [WIP] #156: Strategic Excellence Strategy - CC03 Technical Leadership Implementation (#158)
+236b2df 2025-07-17 02:06:12 +0900 Claude Code CC03: fix: Resolve PR #164 Core Foundation and Code Quality failures
+4e54b59 2025-07-16 21:19:40 +0900 Claude Code CC03: fix: Resolve BudgetDetailResponse undefined name error in budget service
+c419d47 2025-07-16 20:35:29 +0900 Claude Code CC03: fix: Complete CI fixes for budget schemas, user tests, and linting
+804ac2a 2025-07-16 18:51:28 +0900 Claude Code CC03: fix: Re-enable factory imports for security tests
+71df0fa 2025-07-16 16:17:01 +0900 Claude Code CC03: fix: Resolve major CI import failures and improve test collection
+cd502a6 2025-07-16 16:10:05 +0900 Claude Code CC03: fix: Resolve IndentationError in async session function
+8bdf8aa 2025-07-16 14:56:40 +0900 Claude Code CC03: fix: Remove unused pytest import from tests/base.py
+3769383 2025-07-16 14:51:57 +0900 Claude Code CC03: fix: Resolve critical merge conflicts and improve CI stability
+3b7f9ba 2025-07-16 13:32:28 +0900 Kazuhiko OOTA: #149: Phase 4 財務管理機能実装 (#151)
+1f6a04a 2025-07-16 13:30:56 +0900 Kazuhiko OOTA: #149: Phase 4-7 技術設計ドキュメント (#152)
+09020c9 2025-07-16 13:29:38 +0900 Kazuhiko OOTA: #149: Phase 5 CRM機能完全実装 (#153)
+6fa7e7b 2025-07-16 13:01:04 +0900 Kazuhiko OOTA: feat: PM自動化システム v2 - マージコンフリクト解決と機能強化 (#154)
+9fd1fbd 2025-07-16 12:13:48 +0900 Kazuhiko OOTA: #115: PM自動化システム最終調整・マージ準備 (#115)
+e2f1146 2025-07-16 12:09:19 +0900 Claude Code CC03: fix: Comprehensive syntax error resolution for CI compliance
+e6591da 2025-07-16 10:28:45 +0900 Claude Code CC02: Implement Phase 5 CRM functionality complete
+d166cbe 2025-07-16 07:22:16 +0900 Claude Code CC02: feat: Backend integration test fixes and merge conflict resolution
+14b0da5 2025-07-16 06:19:01 +0900 Kazuhiko OOTA: feat: Implement E2E testing infrastructure with Playwright (#95)
+91d9248 2025-07-16 05:51:03 +0900 Kazuhiko OOTA: Add comprehensive edge case tests for User Service authentication (#121) (#124)
+b821ecb 2025-07-16 04:01:16 +0900 Kazuhiko OOTA: feat: Claude Code Usage Optimization Implementation (#139)
+609f9b9 2025-07-16 03:53:11 +0900 Claude Code CC03: fix: Resolve Organization model fiscal_year_start issues
+32e1ee5 2025-07-16 03:31:01 +0900 Claude Code CC03: WIP on feature/issue-142-user-profile-frontend: e6c7ad9 fix: Resolve CI failures for PR #143
+9630ade 2025-07-16 03:31:01 +0900 Claude Code CC03: index on feature/issue-142-user-profile-frontend: e6c7ad9 fix: Resolve CI failures for PR #143
+e6c7ad9 2025-07-16 03:30:45 +0900 Claude Code CC03: fix: Resolve CI failures for PR #143
+4928ddd 2025-07-16 02:14:43 +0900 Kazuhiko OOTA: feat: Implement Role Service and Permission Matrix (#97)
+f5284c7 2025-07-16 01:08:04 +0900 Kazuhiko OOTA: ✨ #142: User Profile Management Phase 2-B Frontend Implementation - COMPLETE (#143)
+c54f7d0 2025-07-16 00:38:53 +0900 Claude Code CC03: fix: Resolve ruff linting violations for PR #97
+f588fab 2025-07-16 00:06:42 +0900 Claude Code CC03: fix: Apply ruff formatting to remaining unformatted files
+ef77d4d 2025-07-16 00:05:08 +0900 Claude Code CC02: fix: Update role service tests to match implementation
+830d2dd 2025-07-15 21:44:24 +0900 Claude Code CC02: fix: Complete database schema synchronization and test fixes
+742845f 2025-07-15 20:53:17 +0900 Claude Code CC02: fix: Update integration test endpoints and fix unit tests
+dc3aad2 2025-07-15 20:43:28 +0900 Claude Code CC02: fix: Schema compatibility and merge conflict resolution
+c05de7d 2025-07-15 20:39:35 +0900 Claude Code CC02: fix: Resolve merge conflicts in PR #97 role service
+11ad910 2025-07-15 16:04:40 +0900 Claude Code CC02: Backup current state before applying fixes
+3c81105 2025-07-14 20:22:59 +0900 Claude Code CC02: fix: Resolve role service database schema mismatch and test failures
+97817f8 2025-07-14 17:15:46 +0900 Claude Code CC02: fix: Resolve test failures in PR #98 Task-Department Integration
+e423c2a 2025-07-15 22:32:08 +0900 Claude Code CC03: fix: Complete ruff linting fixes for PR #143
+e4732b5 2025-07-15 22:18:02 +0900 Claude Code CC03: fix: Resolve ruff linting violations for PR #143
+4d7711d 2025-07-15 21:49:22 +0900 Claude Code CC01: Merge branch 'feature/issue-142-user-profile-frontend' of https://github.com/itdojp/ITDO_ERP2 into feature/issue-142-user-profile-frontend
+c8bd28b 2025-07-15 21:49:06 +0900 Claude Code CC01: feat: Code quality improvements and system enhancements
+305b681 2025-07-15 21:32:36 +0900 Claude Code CC03: fix: Code formatting issues in auth token edge cases test
+8a382b4 2025-07-15 20:58:30 +0900 Kazuhiko OOTA: WSLで複数コンテナを同一ポートで動かすためのIPアドレス設定手順
+88435a0 2025-07-15 20:52:33 +0900 Claude Code CC03: fix: Code formatting issues in role and user models
+da8b089 2025-07-15 20:51:53 +0900 Claude Code CC01: Merge branch 'feature/issue-142-user-profile-frontend' of https://github.com/itdojp/ITDO_ERP2 into feature/issue-142-user-profile-frontend

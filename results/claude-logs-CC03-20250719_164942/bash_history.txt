@@ -1,0 +1,111 @@
+cd /mnt/c/work/ClaudeCode/
+ls
+cd ..
+ls
+cd books
+mkdir books
+cd books/
+s
+git clone https://github.com/itdojp/computational-physicalism-private.git
+gh status
+gh auth status
+pwd
+claude
+cd /mnt/c/work/ClaudeCode/books/
+ls
+rm -rf book-publishing-template-deprecation book-publishing-template-old
+ls
+ls -alt
+cd /mnt/c/work/
+ls
+cd books/
+ls
+cd ..
+ls
+cd ClaudeCode/
+ls
+cd books/
+ls
+claude -r
+claude 
+cd ..
+mkdir work
+cd w
+cd work/
+git clone https://github.com/itdojp/ITDO_ERP2.git
+cd ITDO_ERP2/
+ls
+claude
+cd /mnt/c/work/
+ls
+cd ClaudeCode/
+ls
+cd shirokane-app-site-test-fork/
+claude -r
+cd ..
+claude -r
+pwd
+ls
+cd books/
+claude 
+ls
+claude 
+claude -r
+cd /home/work/ITDO_ERP2/
+claude -r
+exit
+ps aux | grep "sleep 900"
+ps axu
+cd /home/work/
+cd ITDO_ERP2
+ls -la ~/.claude-agent-state
+cd ..
+ls -la ~/.claude-agent-state
+ls -la .claude-agent-state
+cd ITDO_ERP2/
+ls -la .claude-agent-state
+ps axu
+ps aux | grep -E "(claude|agent-work|sleep 900)" | grep -v grep
+env | grep -E "(CLAUDE|AGENT)"
+find ~ -name "*claude*" -o -name "*agent*" 2>/dev/null | grep -v ".git"
+find /mnt/c/work/ITDO_ERP2 -type f -mmin -60 -name "*.sh" 2>/dev/null
+find /home/work/ITDO_ERP2 -type f -mmin -60 -name "*.sh" 2>/dev/null
+find /home/work/ITDO_ERP2 -type f -mmin -240 -name "*.sh" 2>/dev/null
+cd /home/work/ITDO_ERP2/
+cd /home/work/ITDO_ERP2
+ps aux | grep -E "(CC03|cc03|sleep)" | grep -v grep
+cat > /tmp/cc03-auto-setup.sh << 'EOF'
+#!/bin/bash
+echo "=== CC03 無人自動化設定開始 ==="
+cd /home/work/ITDO_ERP2
+
+# 環境変数の永続化
+echo "" >> ~/.bashrc
+echo "# Claude Code Agent Configuration" >> ~/.bashrc
+echo "export CLAUDE_AGENT_ID=CC03" >> ~/.bashrc
+echo "export AGENT_LABEL=cc03" >> ~/.bashrc
+echo "alias my-tasks='gh issue list --label cc03 --state open'" >> ~/.bashrc
+echo "alias my-pr='gh pr list --assignee @me'" >> ~/.bashrc
+
+# 設定の読み込み
+source ~/.bashrc
+
+echo "✅ 環境変数設定完了:"
+echo "   CLAUDE_AGENT_ID=$CLAUDE_AGENT_ID"
+echo "   AGENT_LABEL=$AGENT_LABEL"
+
+# 動作テスト
+echo ""
+echo "=== 動作テスト ==="
+gh issue list --label cc03 --state open
+
+echo ""
+echo "=== CC03 無人自動化設定完了 ==="
+echo "次回Claude Code起動時に自動化が開始されます"
+EOF
+
+chmod +x /tmp/cc03-auto-setup.sh
+which claude
+ls -al /usr/bin/claude
+volta
+exit

@@ -50,7 +50,7 @@ echo "Collecting system information..."
     ps aux | grep -E "(claude|node|python)" | grep -v grep || true
     echo ""
     echo "=== Network Connections ==="
-    netstat -an | grep -E "(ESTABLISHED|LISTEN)" | grep -E "(github|140.82|192.30|443|22)" || true
+    ss -an | grep -E "(ESTAB|LISTEN)" | grep -E "(github|140.82|192.30|443|22)" || true
 } > "${TEMP_DIR}/system_info.txt"
 
 # 2. Claude Code Session Files

@@ -1,0 +1,123 @@
+# Claude Code Agent Configuration
+# This file configures Claude Code to work as an autonomous agent
+
+# Hook configuration
+hooks:
+  enabled: true
+  directory: ".claude-code/hooks"
+  scripts:
+    on-idle: "on-idle.sh"
+    post-command: "post-command.sh"
+  idle-interval: 60  # seconds between idle checks
+
+# Agent configuration
+agent:
+  # Agent identity
+  name: "${AGENT_NAME:-CC01}"
+  type: "${AGENT_TYPE:-frontend}"  # frontend, backend, or infrastructure
+  
+  # Workspace settings
+  workspace:
+    base: "${WORKSPACE:-/home/work/project}"
+    logs: ".agent/logs"
+    state: ".agent/state"
+    instructions: ".agent/instructions"
+  
+  # GitHub integration
+  github:
+    # Labels to filter issues
+    labels:
+      - "${ISSUE_LABEL:-cc01}"
+    # Repository (if not in current directory)
+    repository: "${GITHUB_REPOSITORY:-}"
+    # Issue state to process
+    issue_state: "open"
+    # Maximum issues to process per cycle
+    max_issues: 1
+  
+  # Task execution
+  tasks:
+    # Task types this agent can handle
+    types:
+      - test
+      - fix
+      - implement
+    # Timeout for task execution (seconds)
+    timeout: 3600
+    # Retry failed tasks
+    retry_on_failure: false
+    # Clean workspace after task
+    clean_after_task: false
+
+# Claude API configuration
+claude:
+  # Model selection
+  model: "${CLAUDE_MODEL:-claude-3-opus-20240229}"
+  # Maximum tokens for response
+  max_tokens: 4096
+  # Temperature for code generation
+  temperature: 0.2
+  # System prompt additions for agent mode
+  system_prompt_suffix: |
+    You are operating as an autonomous agent. Follow these guidelines:
+    - Read task instructions from the provided GitHub issue
+    - Generate and execute code to complete the task
+    - Test your implementation thoroughly
+    - Report results clearly and concisely
+
+# Logging configuration
+logging:
+  # Log level: debug, info, warning, error
+  level: "info"
+  # Log file location
+  file: "${WORKSPACE}/.agent/logs/claude-code.log"
+  # Maximum log file size (MB)
+  max_size: 100
+  # Number of backup files to keep
+  backup_count: 5
+
+# Security configuration
+security:
+  # Allowed directories for file operations
+  allowed_paths:
+    - "${WORKSPACE}"
+  # Forbidden paths (even within workspace)
+  forbidden_paths:
+    - ".git/hooks"
+    - ".env"
+    - "**/*secret*"
+    - "**/*password*"
+  # Maximum file size for operations (MB)
+  max_file_size: 10
+  # Allowed file extensions
+  allowed_extensions:
+    - ".py"
+    - ".js"
+    - ".ts"
+    - ".jsx"
+    - ".tsx"
+    - ".json"
+    - ".yaml"
+    - ".yml"
+    - ".md"
+    - ".sh"
+    - ".dockerfile"
+    - ".gitignore"
+
+# Performance configuration
+performance:
+  # Maximum memory usage (MB)
+  max_memory: 2048
+  # CPU usage limit (percentage)
+  max_cpu: 80
+  # Concurrent operations limit
+  max_concurrent: 1
+
+# Environment variables to pass to Claude Code
+environment:
+  # These will be available in hooks and Claude Code execution
+  ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+  GITHUB_TOKEN: "${GITHUB_TOKEN}"
+  AGENT_NAME: "${AGENT_NAME}"
+  ISSUE_LABEL: "${ISSUE_LABEL}"
+  WORKSPACE: "${WORKSPACE}"

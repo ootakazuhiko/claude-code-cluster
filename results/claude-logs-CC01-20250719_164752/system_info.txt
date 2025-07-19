@@ -1,0 +1,79 @@
+=== System Information ===
+Agent: CC01
+Timestamp: Sat Jul 19 04:47:52 PM JST 2025
+Hostname: AH57U-005
+User: root
+
+=== OS Info ===
+Linux AH57U-005 5.15.153.1-microsoft-standard-WSL2 #1 SMP Fri Mar 29 23:14:13 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 24.04.2 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.2 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+=== Memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       2.4Gi       8.0Gi        20Mi       5.2Gi        12Gi
+Swap:          4.0Gi          0B       4.0Gi
+
+=== Disk Usage ===
+Filesystem      Size  Used Avail Use% Mounted on
+none            7.7G     0  7.7G   0% /usr/lib/modules/5.15.153.1-microsoft-standard-WSL2
+none            7.7G  4.0K  7.7G   1% /mnt/wsl
+drivers         119G   69G   50G  58% /usr/lib/wsl/drivers
+/dev/sdc       1007G  8.2G  948G   1% /
+none            7.7G  124K  7.7G   1% /mnt/wslg
+none            7.7G     0  7.7G   0% /usr/lib/wsl/lib
+rootfs          7.7G  2.2M  7.7G   1% /init
+none            7.7G  676K  7.7G   1% /run
+none            7.7G     0  7.7G   0% /run/lock
+none            7.7G   84K  7.7G   1% /run/shm
+tmpfs           4.0M     0  4.0M   0% /sys/fs/cgroup
+none            7.7G   96K  7.7G   1% /mnt/wslg/versions.txt
+none            7.7G   96K  7.7G   1% /mnt/wslg/doc
+C:\             119G   69G   50G  58% /mnt/c
+D:\             358G  221M  358G   1% /mnt/d
+tmpfs           1.6G  8.0K  1.6G   1% /run/user/0
+shm              63M  1.1M   62M   2% /var/lib/containers/storage/overlay-containers/5e611fbd4c83658c7b1c87c35da69c05f49f1a840c465ecc3d00f3205da9a262/userdata/shm
+overlay        1007G  8.2G  948G   1% /var/lib/containers/storage/overlay/3a570a22a4e3d886d7ffabb24b1e685d6cf3d5e7d2d9276ee8803402672f64f0/merged
+shm              63M     0   63M   0% /var/lib/containers/storage/overlay-containers/1b3cea33d06b799412b6e8d5e6f84bf580228e213d9ddd260e3ef3347f515464/userdata/shm
+overlay        1007G  8.2G  948G   1% /var/lib/containers/storage/overlay/ab74f21aada80b072ee2b67fd77bdba479d03edded4dd26a943607983cf54719/merged
+shm              63M     0   63M   0% /var/lib/containers/storage/overlay-containers/a41d5221b78444cbe8431ff19cba7e985c684cfb0af90086b47532e3b0e428a6/userdata/shm
+overlay        1007G  8.2G  948G   1% /var/lib/containers/storage/overlay/3d9ad0a415ec1799823f065a45fa6cc53c66f6ddf0883e00260aeb39f05c3373/merged
+shm              63M     0   63M   0% /var/lib/containers/storage/overlay-containers/38c58e8d7e8e6e285af1c863220deb1be3a6c3e9b2bc779465d304128098de79/userdata/shm
+overlay        1007G  8.2G  948G   1% /var/lib/containers/storage/overlay/a8453c5cbf3458b7e9aea1d5fc31967fe4a549664dcfa3e258005bba4ea97393/merged
+
+=== Process List ===
+5050       47248  0.0  0.6 112740 99928 ?        Ss   Jul13   1:29 /venv/bin/python3 /venv/bin/gunicorn --limit-request-line 8190 --timeout 86400 --bind [::]:80 -w 1 --threads 25 --access-logfile - -c gunicorn_config.py run_pgadmin:app
+5050       47369  0.0  1.1 208248 178988 ?       Sl   Jul13   2:21 /venv/bin/python3 /venv/bin/gunicorn --limit-request-line 8190 --timeout 86400 --bind [::]:80 -w 1 --threads 25 --access-logfile - -c gunicorn_config.py run_pgadmin:app
+root     3384887 18.8  3.9 33259528 636120 pts/4 Sl+  13:47  33:58 claude
+root     3425752  0.0  0.8 11823212 129432 ?     Sl   14:32   0:07 node /home/work/ITDO_ERP2/frontend/node_modules/.bin/vite
+root     3425763  0.1  0.2 860000 32864 ?        Sl   14:32   0:13 /home/work/ITDO_ERP2/frontend/node_modules/@esbuild/linux-x64/bin/esbuild --service=0.18.20 --ping
+
+=== Network Connections ===
+u_str LISTEN  0      4096                                      /run/WSL/1_interop 22549                  * 0                
+u_seq LISTEN  0      1                               /mnt/wslg/weston-notify.sock 22553                  * 0                
+u_str LISTEN  0      4096                         /var/run/dbus/system_bus_socket 22560                  * 0                
+u_str LISTEN  0      4096                             /run/user/0/gnupg/S.keyboxd 23722                  * 0                
+u_str LISTEN  0      4096                             /run/dbus/system_bus_socket 22722                  * 0                
+u_str LISTEN  0      4096                                 /run/podman/podman.sock 22723                  * 0                
+u_str LISTEN  0      4096                                      /run/uuidd/request 22724                  * 0                
+u_str ESTAB   0      0               @cd7f606056cf3e06/bus/systemd/bus-api-system 22748                  * 26714            
+u_str LISTEN  0      4096                          /run/systemd/io.systemd.sysext 22669                  * 0                
+u_seq LISTEN  0      10                                   /proc/self/fd/12/attach 203226                 * 0                
+u_str LISTEN  0      4096                                   /run/WSL/6102_interop 52281                  * 0                
+u_str ESTAB   0      0      @a69bd8946a922b13/bus/systemd-resolve/bus-api-resolve 21747                  * 26713            
+u_str ESTAB   0      0                                /run/dbus/system_bus_socket 26714                  * 22748            
+u_str ESTAB   0      0                                                          * 22564                  * 22563            
+u_str ESTAB   0      0                                                          * 22563                  * 22564            
+u_dgr ESTAB   0      0                                                          * 22603                  * 28694            
+v_str ESTAB   0      0                                                          *:2859378522             2:50000            

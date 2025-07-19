@@ -1,0 +1,126 @@
+=== Git Status ===
+On branch fix/cc01-typescript-errors
+Your branch is ahead of 'origin/fix/cc01-typescript-errors' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   frontend/src/App.test.tsx
+	modified:   frontend/src/App.tsx
+	modified:   frontend/src/components/Layout.tsx
+	modified:   frontend/src/pages/HomePage.tsx
+	modified:   frontend/src/types/user.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	frontend/src/components/AdminLayout.tsx
+	frontend/src/components/DepartmentCreateModal.tsx
+	frontend/src/components/DepartmentDeleteDialog.tsx
+	frontend/src/components/DepartmentEditModal.tsx
+	frontend/src/components/OrganizationTreeView.tsx
+	frontend/src/components/PrivateRoute.tsx
+	frontend/src/components/RoleCreateModal.tsx
+	frontend/src/components/RoleEditModal.tsx
+	frontend/src/components/TaskCreateModal.tsx
+	frontend/src/components/TaskDeleteDialog.tsx
+	frontend/src/components/TaskEditModal.tsx
+	frontend/src/components/UserCreateModal.tsx
+	frontend/src/components/UserDeleteDialog.tsx
+	frontend/src/components/UserEditModal.tsx
+	frontend/src/components/ui/Alert.stories.tsx
+	frontend/src/components/ui/Alert.test.tsx
+	frontend/src/components/ui/Alert.tsx
+	frontend/src/components/ui/Dialog.stories.tsx
+	frontend/src/components/ui/Dialog.test.tsx
+	frontend/src/components/ui/Dialog.tsx
+	frontend/src/components/ui/Input.stories.tsx
+	frontend/src/components/ui/Input.test.tsx
+	frontend/src/components/ui/Input.tsx
+	frontend/src/components/ui/Loading.stories.tsx
+	frontend/src/components/ui/Loading.test.tsx
+	frontend/src/components/ui/Loading.tsx
+	frontend/src/components/ui/Modal.stories.tsx
+	frontend/src/components/ui/Modal.test.tsx
+	frontend/src/components/ui/Modal.tsx
+	frontend/src/components/ui/Select.stories.tsx
+	frontend/src/components/ui/Select.test.tsx
+	frontend/src/components/ui/Select.tsx
+	frontend/src/components/ui/Textarea.stories.tsx
+	frontend/src/components/ui/Textarea.test.tsx
+	frontend/src/components/ui/Textarea.tsx
+	frontend/src/components/ui/Toast.stories.tsx
+	frontend/src/components/ui/Toast.test.tsx
+	frontend/src/components/ui/Toast.tsx
+	frontend/src/pages/DashboardPage.tsx
+	frontend/src/pages/DepartmentListPage.tsx
+	frontend/src/pages/LoginPage.tsx
+	frontend/src/pages/OrganizationListPage.tsx
+	frontend/src/pages/PermissionListPage.tsx
+	frontend/src/pages/TaskListPage.tsx
+	frontend/src/pages/UserListPage.tsx
+	frontend/src/services/authApi.ts
+	frontend/src/services/organizationApi.ts
+	frontend/src/services/permissionApi.ts
+	frontend/src/services/taskApi.ts
+	frontend/src/services/userApi.ts
+	frontend/src/types/organization.ts
+	frontend/src/types/permission.ts
+	frontend/src/types/task.ts
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+=== Current Branch ===
+fix/cc01-typescript-errors
+
+=== Recent Commits (last 50) ===
+e171e5d 2025-07-19 07:45:41 +0900 Claude Code CC01: CC01: Status file created
+d8e6b16 2025-07-19 06:28:48 +0900 Claude Code CC01: test: CC01 direct execution test
+41bbdbd 2025-07-18 17:51:04 +0900 Claude Code CC01: fix(ui): Add Button component with TypeScript strict typing
+dcbedbd 2025-07-18 08:17:44 +0900 Claude Code CC01: CC01: Status confirmation test
+2c1afef 2025-07-17 10:50:32 +0900 Claude Code CC01: fix: Resolve line length formatting issue in auth service
+6ecb789 2025-07-17 10:29:38 +0900 Claude Code CC01: fix: Improve authentication security validation
+c354958 2025-07-17 10:12:02 +0900 Claude Code CC01: fix: Resolve permission inheritance updated_at constraint issue
+f50cb26 2025-07-17 10:02:46 +0900 Claude Code CC01: fix: Apply ruff code quality improvements - 3 E402 errors resolved
+71ce715 2025-07-17 09:57:48 +0900 Claude Code CC01: On feature/issue-142-user-profile-frontend: Current work backup before branch check
+65d3cf9 2025-07-17 09:57:48 +0900 Claude Code CC01: index on feature/issue-142-user-profile-frontend: 3ef4828 fix: Apply ruff formatting to resolve CI formatting check
+5b69f3f 2025-07-17 09:51:14 +0900 Kazuhiko OOTA: UIデザイン
+96fba3d 2025-07-17 09:27:32 +0900 ootakazuhiko: docs: Celebrate Code Quality Mission success and launch Advanced Development Phase
+8121440 2025-07-17 09:20:28 +0900 ootakazuhiko: docs: Respond to CC01's excellent report and clarify branch differences
+2ebc109 2025-07-17 09:01:59 +0900 ootakazuhiko: docs: Add emergency instructions for merge conflict resolution
+d855ae8 2025-07-17 08:22:38 +0900 ootakazuhiko: docs: Add immediate action directive for all agents
+56296a1 2025-07-17 08:21:44 +0900 ootakazuhiko: docs: Add GitHub-accessible Code Quality directives for agents
+b888886 2025-07-17 08:16:30 +0900 ootakazuhiko: docs: Implement Code Quality Automation System for Claude Code agents
+9169b91 2025-07-17 02:04:01 +0900 Claude Code CC02: feat: Add comprehensive UI Development Strategy and Multi-Agent Collaboration framework
+3fe423a 2025-07-17 02:58:28 +0900 Kazuhiko OOTA: [WIP] #156: Strategic Excellence Strategy - CC03 Technical Leadership Implementation (#158)
+1cf36db 2025-07-17 02:50:16 +0900 Claude Code CC02: Merge branch 'main' into feature/issue-142-user-profile-frontend-v2
+ef10972 2025-07-17 02:48:45 +0900 Claude Code CC02: Merge branch 'main' into fix/pr98-department-field-duplication-v2
+1629556 2025-07-17 02:42:27 +0900 Claude Code CC02: fix: Add missing Organization model methods for backward compatibility
+2317002 2025-07-17 02:29:53 +0900 Claude Code CC02: feat: Complete strategic merge of PR #96 Organization Management
+d875a64 2025-07-17 02:20:06 +0900 Claude Code CC02: fix: Resolve SQLAlchemy field duplication in Department model
+191ab43 2025-07-17 02:13:55 +0900 Claude Code CC02: fix: Resolve backend linting issues for CI/CD compatibility
+85e1d55 2025-07-17 02:11:48 +0900 Claude Code CC02: feat: Initialize user profile frontend implementation v2 branch
+57285aa 2025-07-17 02:04:01 +0900 Claude Code CC02: feat: Add comprehensive UI Development Strategy and Multi-Agent Collaboration framework
+0cf14e4 2025-07-16 22:18:28 +0900 Claude Code CC02: Resolve merge conflict in database.py
+6fa0b8d 2025-07-16 21:46:36 +0900 Claude Code CC02: feat: Preserve UI Component Design System documentation for Issue #160
+4e54b59 2025-07-16 21:19:40 +0900 Claude Code CC03: fix: Resolve BudgetDetailResponse undefined name error in budget service
+dd304fd 2025-07-16 20:57:41 +0900 Claude Code CC02: fix: Resolve frontend ESLint errors blocking CI/CD
+5e3fb60 2025-07-16 20:39:36 +0900 Claude Code CC02: feat: Complete UI Component Design System Documentation for Issue #160
+c419d47 2025-07-16 20:35:29 +0900 Claude Code CC03: fix: Complete CI fixes for budget schemas, user tests, and linting
+ced557c 2025-07-16 20:13:36 +0900 Claude Code CC02: feat: Implement comprehensive UI Development Strategy and Multi-Agent Collaboration framework
+3ef4828 2025-07-16 19:52:18 +0900 Claude Code CC01: fix: Apply ruff formatting to resolve CI formatting check
+044ec43 2025-07-16 19:49:31 +0900 Claude Code CC01: fix: Resolve all ruff code quality issues
+b8a5f8b 2025-07-16 19:46:10 +0900 Claude Code CC01: fix: Resolve type safety and code quality issues
+fd8584b 2025-07-16 19:29:07 +0900 Claude Code CC01: feat: Resolve merge conflicts and integrate remote changes
+fffc28a 2025-07-16 19:23:16 +0900 Claude Code CC02: fix: Resolve CI/CD pipeline failures and multi-tenant security tests
+b57e0cb 2025-07-16 19:23:02 +0900 Claude Code CC01: feat: Service layer enhancements and optimizations
+b7e1e24 2025-07-16 19:22:38 +0900 Claude Code CC01: feat: Enhanced application bootstrap and comprehensive tests
+e654af3 2025-07-16 19:22:08 +0900 Claude Code CC01: feat: Repository and schema enhancements
+de34725 2025-07-16 19:21:06 +0900 Claude Code CC01: feat: Advanced service layer implementation
+413a4d4 2025-07-16 19:20:41 +0900 Claude Code CC01: feat: Comprehensive API endpoint implementation
+774f801 2025-07-16 19:20:20 +0900 Claude Code CC01: feat: Enhanced monitoring and configuration system
+804ac2a 2025-07-16 18:51:28 +0900 Claude Code CC03: fix: Re-enable factory imports for security tests
+45810e4 2025-07-16 17:53:45 +0900 Claude Code CC02: fix: Complete backend integration test fixes for Issue #104
+6746004 2025-07-16 16:22:24 +0900 Claude Code CC02: fix: Resolve SQLAlchemy foreign key relationship conflicts
+71df0fa 2025-07-16 16:17:01 +0900 Claude Code CC03: fix: Resolve major CI import failures and improve test collection
+f6d0eb7 2025-07-16 16:13:17 +0900 Claude Code CC02: feat: Implement REP-001 basic report functionality for Phase 7 analytics

@@ -11,111 +11,113 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo -e "${BLUE}=== Claude Code Cluster 旧システム アンインストール ===${NC}"
-echo
-echo -e "${YELLOW}警告: このスクリプトは旧システムのコンポーネントを削除します。${NC}"
-echo -e "${YELLOW}作業データは保持されますが、念のためバックアップを推奨します。${NC}"
-echo
+printf "${BLUE}=== Claude Code Cluster 旧システム アンインストール ===${NC}\n"
+printf "\n"
+printf "${YELLOW}警告: このスクリプトは旧システムのコンポーネントを削除します。${NC}\n"
+printf "${YELLOW}作業データは保持されますが、念のためバックアップを推奨します。${NC}\n"
+printf "\n"
+
 read -p "続行しますか？ (y/N): " -n 1 -r
-echo
+printf "\n"
+
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "キャンセルしました。"
+    printf "キャンセルしました。\n"
     exit 1
 fi
 
 # Step 1: Stop all services
-echo -e "\n${BLUE}Step 1: サービスの停止${NC}"
+printf "\n${BLUE}Step 1: サービスの停止${NC}\n"
 
 # Stop claude-cluster command if exists
 if command -v claude-cluster &> /dev/null; then
-    echo "Claude Clusterを停止中..."
+    printf "Claude Clusterを停止中...\n"
     claude-cluster stop 2>/dev/null || true
 fi
 
 # Stop systemd services
-echo "systemdサービスを停止中..."
+printf "systemdサービスを停止中...\n"
 for service in claude-router claude-cc01 claude-cc02 claude-cc03 claude-issue-monitor; do
     if systemctl --user is-active --quiet $service 2>/dev/null; then
         systemctl --user stop $service
-        echo -e "  ${GREEN}✓${NC} $service stopped"
+        printf "  ${GREEN}✓${NC} $service stopped\n"
     fi
 done
 
 # Kill tmux sessions
-echo "tmuxセッションを終了中..."
+printf "tmuxセッションを終了中...\n"
 for session in cc01 cc02 cc03 manager router; do
     if tmux has-session -t $session 2>/dev/null; then
         tmux kill-session -t $session
-        echo -e "  ${GREEN}✓${NC} $session killed"
+        printf "  ${GREEN}✓${NC} $session killed\n"
     fi
 done
 
 # Kill any remaining processes
-echo "残存プロセスを終了中..."
+printf "残存プロセスを終了中...\n"
 pkill -f "central-router.py" 2>/dev/null || true
 pkill -f "webhook-server" 2>/dev/null || true
 pkill -f "issue-monitor.py" 2>/dev/null || true
 
 # Step 2: Backup important data
-echo -e "\n${BLUE}Step 2: データのバックアップ${NC}"
+printf "\n${BLUE}Step 2: データのバックアップ${NC}\n"
 
 BACKUP_DIR="$HOME/claude-cluster-backup-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
 # Backup workspaces if they exist
 if [ -d "/home/claude-cluster/agents" ]; then
-    echo "ワークスペースをバックアップ中..."
+    printf "ワークスペースをバックアップ中...\n"
     for agent in cc01 cc02 cc03 manager; do
         if [ -d "/home/claude-cluster/agents/$agent/workspace" ]; then
             cp -r "/home/claude-cluster/agents/$agent/workspace" "$BACKUP_DIR/${agent}-workspace"
-            echo -e "  ${GREEN}✓${NC} $agent workspace backed up"
+            printf "  ${GREEN}✓${NC} $agent workspace backed up\n"
         fi
     done
 fi
 
 # Backup configs
 if [ -d "/home/claude-cluster/config" ]; then
-    echo "設定ファイルをバックアップ中..."
+    printf "設定ファイルをバックアップ中...\n"
     cp -r "/home/claude-cluster/config" "$BACKUP_DIR/config"
-    echo -e "  ${GREEN}✓${NC} Config backed up"
+    printf "  ${GREEN}✓${NC} Config backed up\n"
 fi
 
 # Backup logs
 if [ -d "/home/claude-cluster/shared/logs" ]; then
-    echo "ログをバックアップ中..."
+    printf "ログをバックアップ中...\n"
     cp -r "/home/claude-cluster/shared/logs" "$BACKUP_DIR/logs"
-    echo -e "  ${GREEN}✓${NC} Logs backed up"
+    printf "  ${GREEN}✓${NC} Logs backed up\n"
 fi
 
-echo -e "${GREEN}バックアップ完了: $BACKUP_DIR${NC}"
+printf "${GREEN}バックアップ完了: $BACKUP_DIR${NC}\n"
 
 # Step 3: Remove systemd services
-echo -e "\n${BLUE}Step 3: systemdサービスの削除${NC}"
+printf "\n${BLUE}Step 3: systemdサービスの削除${NC}\n"
 
 for service in claude-router claude-cc01 claude-cc02 claude-cc03 claude-issue-monitor; do
     if [ -f "$HOME/.config/systemd/user/$service.service" ]; then
         systemctl --user disable $service 2>/dev/null || true
         rm -f "$HOME/.config/systemd/user/$service.service"
-        echo -e "  ${GREEN}✓${NC} $service removed"
+        printf "  ${GREEN}✓${NC} $service removed\n"
     fi
 done
 
 systemctl --user daemon-reload
 
 # Step 4: Remove global commands
-echo -e "\n${BLUE}Step 4: グローバルコマンドの削除${NC}"
+printf "\n${BLUE}Step 4: グローバルコマンドの削除${NC}\n"
 
 if [ -L "/usr/local/bin/claude-cluster" ]; then
     sudo rm -f /usr/local/bin/claude-cluster
-    echo -e "  ${GREEN}✓${NC} /usr/local/bin/claude-cluster removed"
+    printf "  ${GREEN}✓${NC} /usr/local/bin/claude-cluster removed\n"
 fi
 
 # Step 5: Clean up directories
-echo -e "\n${BLUE}Step 5: ディレクトリのクリーンアップ${NC}"
+printf "\n${BLUE}Step 5: ディレクトリのクリーンアップ${NC}\n"
 
 # Remove specific components but keep workspaces
 if [ -d "/home/claude-cluster" ]; then
-    echo "旧システムファイルを削除中..."
+    printf "旧システムファイルを削除中...\n"
     
     # Remove scripts
     rm -rf /home/claude-cluster/scripts/management/central-router.py 2>/dev/null || true
@@ -129,11 +131,11 @@ if [ -d "/home/claude-cluster" ]; then
         rm -rf "/home/claude-cluster/agents/$agent/.claude/hooks" 2>/dev/null || true
     done
     
-    echo -e "  ${GREEN}✓${NC} System files removed (workspaces preserved)"
+    printf "  ${GREEN}✓${NC} System files removed (workspaces preserved)\n"
 fi
 
 # Step 6: Clean environment variables
-echo -e "\n${BLUE}Step 6: 環境変数のクリーンアップ${NC}"
+printf "\n${BLUE}Step 6: 環境変数のクリーンアップ${NC}\n"
 
 # Create backup of bashrc
 cp ~/.bashrc ~/.bashrc.backup.$(date +%Y%m%d)
@@ -145,41 +147,41 @@ sed -i '/export WEBHOOK_PORT=/d' ~/.bashrc
 sed -i '/export AGENT_NAME=/d' ~/.bashrc
 sed -i '/claude-cluster\/scripts/d' ~/.bashrc
 
-echo -e "  ${GREEN}✓${NC} Environment variables cleaned"
+printf "  ${GREEN}✓${NC} Environment variables cleaned\n"
 
 # Step 7: Check ports
-echo -e "\n${BLUE}Step 7: ポート解放の確認${NC}"
+printf "\n${BLUE}Step 7: ポート解放の確認${NC}\n"
 
 PORTS_IN_USE=false
 for port in 8888 8881 8882 8883; do
     if netstat -tlnp 2>/dev/null | grep -q ":$port "; then
-        echo -e "  ${YELLOW}!${NC} Port $port is still in use"
+        printf "  ${YELLOW}!${NC} Port $port is still in use\n"
         PORTS_IN_USE=true
     else
-        echo -e "  ${GREEN}✓${NC} Port $port is free"
+        printf "  ${GREEN}✓${NC} Port $port is free\n"
     fi
 done
 
 if [ "$PORTS_IN_USE" = true ]; then
-    echo -e "${YELLOW}警告: 一部のポートがまだ使用中です。再起動を推奨します。${NC}"
+    printf "${YELLOW}警告: 一部のポートがまだ使用中です。再起動を推奨します。${NC}\n"
 fi
 
 # Step 8: Summary
-echo -e "\n${BLUE}=== アンインストール完了 ===${NC}"
-echo
-echo -e "${GREEN}削除された項目:${NC}"
-echo "  - systemdサービス"
-echo "  - グローバルコマンド (/usr/local/bin/claude-cluster)"
-echo "  - Webhook/Routerスクリプト"
-echo "  - Hookシステム"
-echo "  - 環境変数設定"
-echo
-echo -e "${YELLOW}保持された項目:${NC}"
-echo "  - ワークスペースデータ"
-echo "  - バックアップ: $BACKUP_DIR"
-echo
-echo -e "${BLUE}次のステップ:${NC}"
-echo "1. 新しいターミナルを開いて環境をリロード"
-echo "2. 新システムの導入ガイドに従って設定"
-echo
-echo -e "${GREEN}旧システムのアンインストールが完了しました。${NC}"
+printf "\n${BLUE}=== アンインストール完了 ===${NC}\n"
+printf "\n"
+printf "${GREEN}削除された項目:${NC}\n"
+printf "  - systemdサービス\n"
+printf "  - グローバルコマンド (/usr/local/bin/claude-cluster)\n"
+printf "  - Webhook/Routerスクリプト\n"
+printf "  - Hookシステム\n"
+printf "  - 環境変数設定\n"
+printf "\n"
+printf "${YELLOW}保持された項目:${NC}\n"
+printf "  - ワークスペースデータ\n"
+printf "  - バックアップ: $BACKUP_DIR\n"
+printf "\n"
+printf "${BLUE}次のステップ:${NC}\n"
+printf "1. 新しいターミナルを開いて環境をリロード\n"
+printf "2. 新システムの導入ガイドに従って設定\n"
+printf "\n"
+printf "${GREEN}旧システムのアンインストールが完了しました。${NC}\n"

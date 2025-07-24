@@ -7,7 +7,12 @@
 curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/scripts/safe-uninstall.sh | bash
 ```
 
-### Install New System
+### Install New System (UV Version - Recommended)
+```bash
+curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/scripts/install-github-uv.sh | bash
+```
+
+### Install New System (pip3 Version)
 ```bash
 curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/scripts/install-github-simple.sh | bash
 ```
@@ -22,7 +27,12 @@ wget https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/scr
 chmod +x safe-uninstall.sh
 ./safe-uninstall.sh
 
-# Install
+# Install (UV version - recommended)
+wget https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/scripts/install-github-uv.sh
+chmod +x install-github-uv.sh
+./install-github-uv.sh
+
+# Install (pip3 version)
 wget https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/scripts/install-github-simple.sh
 chmod +x install-github-simple.sh
 ./install-github-simple.sh
@@ -37,7 +47,10 @@ cd claude-code-cluster
 # Uninstall old system
 ./scripts/safe-uninstall.sh
 
-# Install new system
+# Install new system (UV version - recommended)
+./scripts/install-github-uv.sh
+
+# Or install pip3 version
 ./scripts/install-github-simple.sh
 ```
 
@@ -50,9 +63,17 @@ cd claude-code-cluster
 - Preserves workspace data
 - Robust error handling
 
+### install-github-uv.sh (Recommended)
+- English-only interface
+- UV package manager (automatic installation)
+- Virtual environment with uv venv
+- UV management utilities included
+- GitHub token validation
+- Creates comprehensive management scripts
+
 ### install-github-simple.sh
 - English-only interface
-- Dependency checking
+- pip3 dependency checking
 - GitHub token validation
 - Creates management scripts
 - Environment configuration
@@ -74,6 +95,13 @@ cd ~/claude-workers
 
 # Test functionality
 ./test-worker.sh cc01
+
+# For UV installations only:
+# Enter UV virtual environment
+./uv-manage.sh shell
+
+# List UV packages
+./uv-manage.sh list
 ```
 
 ## Troubleshooting

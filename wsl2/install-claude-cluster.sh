@@ -16,6 +16,8 @@ CLUSTER_HOME="/home/claude-cluster"
 CLAUDE_VERSION="latest"
 PYTHON_VERSION="3.12"
 REPO_URL="https://github.com/ootakazuhiko/claude-code-cluster.git"
+CLAUDE_USER="claude-user"
+CLAUDE_GROUP="claude-group"
 
 # Logging
 LOG_FILE="/tmp/claude-cluster-install-$(date +%Y%m%d_%H%M%S).log"
@@ -104,15 +106,37 @@ install_claude() {
     fi
 }
 
+create_user() {
+    print_header "Creating Claude User"
+    
+    # Check if user already exists
+    if id "$CLAUDE_USER" &>/dev/null; then
+        print_info "User $CLAUDE_USER already exists"
+    else
+        # Create group
+        sudo groupadd -f "$CLAUDE_GROUP"
+        
+        # Create user with home directory
+        sudo useradd -m -g "$CLAUDE_GROUP" -s /bin/bash "$CLAUDE_USER"
+        
+        # Add current user to claude group for easier management
+        sudo usermod -a -G "$CLAUDE_GROUP" "$USER"
+        
+        print_success "Created user $CLAUDE_USER"
+    fi
+}
+
 create_directory_structure() {
     print_header "Creating Directory Structure"
     
     # Create main directories
     sudo mkdir -p "$CLUSTER_HOME"
-    sudo chown $USER:$USER "$CLUSTER_HOME"
+    sudo chown "$CLAUDE_USER:$CLAUDE_GROUP" "$CLUSTER_HOME"
     
     cd "$CLUSTER_HOME"
     
+    # Create all directories as claude user
+    sudo -u "$CLAUDE_USER" bash << 'EOF'
     # Create agent directories
     for agent in cc01 cc02 cc03; do
         mkdir -p "agents/$agent/workspace"
@@ -129,6 +153,7 @@ create_directory_structure() {
     
     # Create config directory
     mkdir -p config
+EOF
     
     print_success "Directory structure created"
 }
@@ -173,6 +198,9 @@ if [ -f "\$CLAUDE_HOOKS_DIR/activate.sh" ]; then
 fi
 EOF
         chmod +x "$CLUSTER_HOME/agents/$agent/.claude/config/profile.sh"
+        
+        # Set ownership to claude user
+        sudo chown -R "$CLAUDE_USER:$CLAUDE_GROUP" "$CLUSTER_HOME/agents/$agent"
     done
     
     # Agent specialization
@@ -465,6 +493,7 @@ if __name__ == "__main__":
 EOF
 
     chmod +x "$CLUSTER_HOME/scripts/management/central-router.py"
+    sudo chown -R "$CLAUDE_USER:$CLAUDE_GROUP" "$CLUSTER_HOME/scripts"
     print_success "Central router created"
 }
 
@@ -515,11 +544,11 @@ start_agent() {
         return
     fi
     
-    # Start in tmux session
-    tmux new-session -d -s "$agent" -c "$CLUSTER_HOME/agents/$agent/workspace" \
+    # Start in tmux session as claude user with --dangerously-skip-permissions
+    sudo -u "$CLAUDE_USER" tmux new-session -d -s "$agent" -c "$CLUSTER_HOME/agents/$agent/workspace" \
         "source $CLUSTER_HOME/agents/$agent/.claude/config/profile.sh && \
          source $CLUSTER_HOME/agents/$agent/.claude/hooks/activate.sh && \
-         claude"
+         claude --dangerously-skip-permissions"
     
     echo -e "${GREEN}Agent $agent started${NC}"
 }
@@ -545,8 +574,8 @@ start_router() {
     fi
     
     cd "$CLUSTER_HOME"
-    mkdir -p shared/logs
-    nohup python3 scripts/management/central-router.py > shared/logs/router.log 2>&1 &
+    sudo -u "$CLAUDE_USER" mkdir -p shared/logs
+    sudo -u "$CLAUDE_USER" nohup python3 scripts/management/central-router.py > shared/logs/router.log 2>&1 &
     echo -e "${GREEN}Central router started${NC}"
 }
 
@@ -736,6 +765,8 @@ After=network.target
 
 [Service]
 Type=simple
+User=$CLAUDE_USER
+Group=$CLAUDE_GROUP
 WorkingDirectory=$CLUSTER_HOME
 ExecStart=/usr/bin/python3 $CLUSTER_HOME/scripts/management/central-router.py
 Restart=on-failure
@@ -755,10 +786,12 @@ After=network.target claude-router.service
 
 [Service]
 Type=simple
+User=$CLAUDE_USER
+Group=$CLAUDE_GROUP
 WorkingDirectory=$CLUSTER_HOME/agents/$agent/workspace
 Environment="AGENT_NAME=${agent^^}"
 ExecStartPre=/bin/bash -c 'source $CLUSTER_HOME/agents/$agent/.claude/config/profile.sh'
-ExecStart=/usr/bin/tmux new-session -d -s $agent 'source $CLUSTER_HOME/agents/$agent/.claude/hooks/activate.sh && claude'
+ExecStart=/usr/bin/tmux new-session -d -s $agent 'source $CLUSTER_HOME/agents/$agent/.claude/hooks/activate.sh && claude --dangerously-skip-permissions'
 RemainAfterExit=yes
 Restart=on-failure
 RestartSec=10
@@ -956,6 +989,7 @@ main() {
     
     # Installation steps
     install_dependencies
+    create_user
     install_claude
     create_directory_structure
     setup_agent_configs

@@ -10,6 +10,7 @@ Complete multi-agent Claude Code environment for Windows + WSL2.
 - ✅ **Windows integration**: PowerShell commands and Terminal profiles
 - ✅ **Auto-start**: Systemd services (optional)
 - ✅ **Hook system**: Event-driven automation
+- ✅ **Non-root execution**: Runs as dedicated user with `--dangerously-skip-permissions`
 
 ## Quick Start
 
@@ -109,6 +110,8 @@ curl -X POST http://localhost:8888/broadcast \
 ```
 Windows Host
 └── WSL2 Ubuntu
+    ├── Claude User (claude-user) - Non-root user for security
+    │
     ├── Central Router (port 8888)
     │   ├── /webhook      - Main webhook endpoint
     │   ├── /task         - Task submission
@@ -163,6 +166,10 @@ Modify to customize:
 - Specializations
 - Resource limits
 
+## Security Note
+
+All Claude Code agents run as a non-root user (`claude-user`) for security. This enables the use of `--dangerously-skip-permissions` flag, which prevents execution interruptions.
+
 ## Troubleshooting
 
 ### Agents not starting
@@ -175,6 +182,15 @@ ps aux | grep webhook
 
 # View detailed logs
 tail -f /home/claude-cluster/shared/logs/*.log
+```
+
+### Permission issues
+```bash
+# Check file ownership
+ls -la /home/claude-cluster/
+
+# Fix ownership if needed
+sudo chown -R claude-user:claude-group /home/claude-cluster/
 ```
 
 ### Port conflicts

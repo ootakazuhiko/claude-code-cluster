@@ -1,50 +1,52 @@
 # Claude Code Cluster
 
-分散型Claude Code実行環境 - 複数のPCで並行開発を自動化
+分散型Claude Code実行環境 - 複数のエージェントで並行開発を自動化
+
+## 🚀 クイックスタート（WSL2）
+
+Windows + WSL2環境なら、ワンコマンドで環境構築完了：
+
+```bash
+curl -sSL https://raw.githubusercontent.com/ootakazuhiko/claude-code-cluster/main/wsl2/install-claude-cluster.sh | bash
+```
+
+詳細は[包括的インストールガイド](docs/INSTALLATION_GUIDE_COMPREHENSIVE.md)を参照してください。
 
 ## 🎯 概要
 
-Claude Code Clusterは、複数のClaude Code エージェントを独立したPC上で動作させ、GitHubを中心とした協調開発を自動化するシステムです。
+Claude Code Clusterは、複数のClaude Code エージェントを協調動作させ、GitHubを中心とした開発を自動化するシステムです。
 
 ### 主な特徴
 
-- **分散実行**: 最大10台のPCで並行処理
-- **専門特化**: 各エージェントがbackend、frontend、testing等に特化
-- **独立ワークスペース**: 各PCが完全に独立した開発環境を維持
-- **自動調整**: Central Coordinatorがタスクを最適分散
-- **GitHub統合**: Issues/PRベースの完全自動化
+- **簡単セットアップ**: WSL2環境でワンコマンドインストール
+- **専門特化**: Frontend、Backend、Infrastructureに特化した3つのエージェント
+- **インテリジェントルーティング**: Central Routerが最適なエージェントにタスク分配
+- **セキュア実行**: 非rootユーザーでの安全な実行
+- **Windows統合**: PowerShellからの完全制御
 
 ## 🏗️ システム構成
 
+### WSL2単一マシン構成（推奨）
+
 ```
-┌─────────────────┐     ┌──────────────────────────────────────┐
-│   GitHub Repo   │────▶│          Central Coordinator         │
-└─────────────────┘     └──────────────────┬───────────────────┘
-                                           │
-                        ┌──────────────────┼───────────────────┐
-                        ▼                  ▼                   ▼
-                ┌───────────────┐  ┌───────────────┐   ┌───────────────┐
-                │  Claude PC-1  │  │  Claude PC-2  │   │  Claude PC-3  │
-                │   Backend     │  │   Frontend    │   │   Testing     │
-                │  Specialist   │  │  Specialist   │   │  Specialist   │
-                └───────────────┘  └───────────────┘   └───────────────┘
-                        │                  │                   │
-                        ▼                  ▼                   ▼
-                ┌───────────────┐  ┌───────────────┐   ┌───────────────┐
-                │ Workspace-1   │  │ Workspace-2   │   │ Workspace-3   │
-                │ /workspace/   │  │ /workspace/   │   │ /workspace/   │
-                │   backend     │  │   frontend    │   │   testing     │
-                └───────────────┘  └───────────────┘   └───────────────┘
+Windows Host
+└── WSL2 Ubuntu
+    ├── Central Router (8888) ─── タスク分配・健全性監視
+    ├── CC01 Agent (8881) ────── Frontend開発
+    ├── CC02 Agent (8882) ────── Backend開発
+    └── CC03 Agent (8883) ────── Infrastructure/DevOps
 ```
 
-## 📁 ドキュメント構成
+詳細は[システムアーキテクチャ詳細](docs/SYSTEM_ARCHITECTURE.md)を参照してください。
 
-### 📋 ドキュメント
+## 📁 ドキュメント
 
-- [システム要件](docs/requirements.md) - ハードウェア・ソフトウェア要件
-- [インストールガイド](docs/installation.md) - 初期セットアップ手順
-- [設定リファレンス](docs/configuration.md) - 設定ファイル詳細
-- [運用ガイド](docs/operations.md) - 日常運用手順
+### 🔧 セットアップ・運用
+
+- [システムアーキテクチャ詳細](docs/SYSTEM_ARCHITECTURE.md) - 完全なシステム構成の解説
+- [包括的インストールガイド](docs/INSTALLATION_GUIDE_COMPREHENSIVE.md) - ステップバイステップの導入手順
+- [WSL2クイックスタート](wsl2/README.md) - Windows環境での簡単セットアップ
+- [運用ガイド](OPERATION_GUIDE.md) - 日常的な運用とメンテナンス
 - [トラブルシューティング](docs/troubleshooting.md) - 問題解決ガイド
 
 ### 🏗️ アーキテクチャ

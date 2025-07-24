@@ -19,6 +19,13 @@ VENV_DIR="$WORKERS_DIR/claude-code-cluster/.venv"
 
 printf "Starting CC01 worker...\n"
 
+# Ensure tmux server is running
+if ! tmux list-sessions >/dev/null 2>&1; then
+    printf "Starting tmux server...\n"
+    tmux start-server
+    sleep 1
+fi
+
 # Check if already running
 if tmux has-session -t cc01-github 2>/dev/null; then
     printf "CC01 is already running. Use 'tmux attach -t cc01-github' to view.\n"
@@ -44,6 +51,13 @@ VENV_DIR="$WORKERS_DIR/claude-code-cluster/.venv"
 
 printf "Starting CC02 worker...\n"
 
+# Ensure tmux server is running
+if ! tmux list-sessions >/dev/null 2>&1; then
+    printf "Starting tmux server...\n"
+    tmux start-server
+    sleep 1
+fi
+
 # Check if already running
 if tmux has-session -t cc02-github 2>/dev/null; then
     printf "CC02 is already running. Use 'tmux attach -t cc02-github' to view.\n"
@@ -68,6 +82,13 @@ SCRIPT_DIR="$WORKERS_DIR/claude-code-cluster/scripts"
 VENV_DIR="$WORKERS_DIR/claude-code-cluster/.venv"
 
 printf "Starting CC03 worker...\n"
+
+# Ensure tmux server is running
+if ! tmux list-sessions >/dev/null 2>&1; then
+    printf "Starting tmux server...\n"
+    tmux start-server
+    sleep 1
+fi
 
 # Check if already running
 if tmux has-session -t cc03-github 2>/dev/null; then

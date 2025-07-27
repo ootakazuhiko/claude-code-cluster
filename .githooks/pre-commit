@@ -1,0 +1,182 @@
+#!/bin/bash
+# SDAD Phase-aware pre-commit hook
+
+set -euo pipefail
+
+# カラー定義
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+# 現在のブランチ名を取得
+current_branch=$(git branch --show-current)
+
+# Issue番号を抽出
+if [[ $current_branch =~ ^(feature|fix)/issue-([0-9]+) ]]; then
+    issue_number=${BASH_REMATCH[2]}
+else
+    echo -e "${YELLOW}Warning: Branch name doesn't follow convention (feature/issue-XXX)${NC}"
+    exit 0  # 警告のみで続行
+fi
+
+# GitHub CLIが利用可能か確認
+if ! command -v gh &> /dev/null; then
+    echo -e "${YELLOW}Warning: GitHub CLI not found. Skipping phase validation.${NC}"
+    exit 0
+fi
+
+# Issueからフェーズラベルを取得
+phase_label=$(gh issue view "$issue_number" --json labels -q '.labels[].name' | grep -E "phase-[0-4]" | head -1 || echo "")
+
+if [[ -z $phase_label ]]; then
+    echo -e "${YELLOW}Warning: No phase label found on issue #$issue_number${NC}"
+    exit 0
+fi
+
+echo -e "${GREEN}Current phase: $phase_label${NC}"
+
+# ステージングされたファイルを取得
+staged_files=$(git diff --cached --name-only)
+
+# フェーズごとの検証
+case $phase_label in
+    "phase-1-discovery")
+        # Phase 1: フィーチャーファイルのみ許可
+        for file in $staged_files; do
+            if [[ ! $file =~ ^features/.*\.feature$ ]] && [[ ! $file =~ ^docs/.*/.*_brief\.md$ ]]; then
+                echo -e "${RED}Error: Phase 1 では feature ファイルと brief のみコミット可能です${NC}"
+                echo -e "${RED}不正なファイル: $file${NC}"
+                exit 1
+            fi
+        done
+        
+        # Gherkin構文の基本チェック
+        for file in $staged_files; do
+            if [[ $file =~ \.feature$ ]]; then
+                if ! grep -q "Feature:" "$file"; then
+                    echo -e "${RED}Error: Feature ファイルに 'Feature:' が見つかりません: $file${NC}"
+                    exit 1
+                fi
+                if ! grep -q "Scenario:" "$file"; then
+                    echo -e "${RED}Error: Feature ファイルに 'Scenario:' が見つかりません: $file${NC}"
+                    exit 1
+                fi
+            fi
+        done
+        ;;
+        
+    "phase-2-documentation")
+        # Phase 2: 仕様書のみ許可
+        for file in $staged_files; do
+            if [[ ! $file =~ ^docs/.*/.*\.(md|yaml|mermaid)$ ]]; then
+                echo -e "${RED}Error: Phase 2 では仕様書のみコミット可能です${NC}"
+                echo -e "${RED}不正なファイル: $file${NC}"
+                exit 1
+            fi
+        done
+        ;;
+        
+    "phase-3-validation")
+        # Phase 3: テストファイルのみ許可
+        for file in $staged_files; do
+            if [[ ! $file =~ test ]] && [[ ! $file =~ spec ]]; then
+                echo -e "${RED}Error: Phase 3 ではテストファイルのみコミット可能です${NC}"
+                echo -e "${RED}不正なファイル: $file${NC}"
+                exit 1
+            fi
+        done
+        ;;
+        
+    "phase-4-generation")
+        # Phase 4: 実装ファイル許可（ただしテストを除く新規テストは不可）
+        for file in $staged_files; do
+            if [[ $file =~ test.*\.py$ ]] || [[ $file =~ \.test\.(ts|tsx|js|jsx)$ ]]; then
+                # 既存テストの修正は許可、新規テストは確認
+                if ! git ls-files --error-unmatch "$file" &> /dev/null; then
+                    echo -e "${YELLOW}Warning: Phase 4 で新規テストファイルを追加しています: $file${NC}"
+                    echo -e "${YELLOW}テストは Phase 3 で作成済みのはずです。続行しますか？ [y/N]${NC}"
+                    read -r response
+                    if [[ ! $response =~ ^[Yy]$ ]]; then
+                        exit 1
+                    fi
+                fi
+            fi
+        done
+        ;;
+esac
+
+# 品質チェック（全フェーズ共通）
+echo -e "${GREEN}Running quality checks...${NC}"
+
+# Python ファイルのチェック
+python_files=$(echo "$staged_files" | grep -E "\.py$" || true)
+if [[ -n $python_files ]]; then
+    echo "Checking Python files..."
+    cd backend
+    for file in $python_files; do
+        abs_path=$(realpath "../$file")
+        if [[ -f "$abs_path" ]]; then
+            # Ruff チェック
+            if ! uv run ruff check "$abs_path"; then
+                echo -e "${RED}Error: Ruff check failed for $file${NC}"
+                echo -e "${YELLOW}Run: cd backend && uv run ruff check --fix${NC}"
+                exit 1
+            fi
+        fi
+    done
+    cd ..
+fi
+
+# TypeScript/JavaScript ファイルのチェック
+ts_files=$(echo "$staged_files" | grep -E "\.(ts|tsx|js|jsx)$" | grep -v "node_modules" || true)
+if [[ -n $ts_files ]]; then
+    echo "Checking TypeScript/JavaScript files..."
+    cd frontend
+    # ESLint は npm run lint で実行
+    if ! npm run lint -- --quiet; then
+        echo -e "${RED}Error: ESLint check failed${NC}"
+        echo -e "${YELLOW}Run: cd frontend && npm run lint${NC}"
+        exit 1
+    fi
+    cd ..
+fi
+
+# コミットメッセージのテンプレート提案
+if [[ -n $phase_label ]]; then
+    echo -e "${GREEN}=== Suggested commit message format ===${NC}"
+    case $phase_label in
+        "phase-1-discovery")
+            echo "feat(discovery): Add feature scenarios for [feature_name]"
+            echo ""
+            echo "- Define [N] user scenarios"
+            echo "- Include edge cases for [specific_case]"
+            echo "- Add acceptance criteria"
+            ;;
+        "phase-2-documentation")
+            echo "docs(spec): Add technical specification for [feature_name]"
+            echo ""
+            echo "- API design for [endpoints]"
+            echo "- Data model for [entities]"
+            echo "- UI component structure"
+            ;;
+        "phase-3-validation")
+            echo "test: Add failing tests for [feature_name]"
+            echo ""
+            echo "- Unit tests for [component/module]"
+            echo "- Integration tests for [flow]"
+            echo "- Coverage: [N]%"
+            ;;
+        "phase-4-generation")
+            echo "feat: Implement [feature_name] to pass tests"
+            echo ""
+            echo "- Implement [component/module]"
+            echo "- All tests passing"
+            echo "- Meets performance requirements"
+            ;;
+    esac
+    echo ""
+    echo "Issue: #$issue_number"
+fi
+
+echo -e "${GREEN}Pre-commit checks passed!${NC}"

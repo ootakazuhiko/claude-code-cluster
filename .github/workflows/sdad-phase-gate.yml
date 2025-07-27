@@ -1,0 +1,306 @@
+name: SDAD Phase Gate Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  validate-phase:
+    name: Validate SDAD Phase Requirements
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Get PR labels
+        id: pr-labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels.map(l => l.name);
+            const phaseLabel = labels.find(l => l.match(/^phase-[0-4]/));
+            
+            if (!phaseLabel) {
+              core.setFailed('No phase label found. Please add a phase label (phase-1 through phase-4)');
+              return;
+            }
+            
+            core.setOutput('phase', phaseLabel);
+            console.log(`Current phase: ${phaseLabel}`);
+            
+      - name: Extract feature name
+        id: feature
+        run: |
+          # ブランチ名からフィーチャー名を抽出
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ $BRANCH_NAME =~ (feature|fix)/issue-[0-9]+-(.+) ]]; then
+            FEATURE_NAME="${BASH_REMATCH[2]}"
+            echo "feature=$FEATURE_NAME" >> $GITHUB_OUTPUT
+            echo "Feature: $FEATURE_NAME"
+          else
+            echo "::warning::Could not extract feature name from branch"
+            echo "feature=unknown" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Setup Python
+        if: contains(steps.pr-labels.outputs.phase, 'phase-3') || contains(steps.pr-labels.outputs.phase, 'phase-4')
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+          
+      - name: Install uv
+        if: contains(steps.pr-labels.outputs.phase, 'phase-3') || contains(steps.pr-labels.outputs.phase, 'phase-4')
+        uses: astral-sh/setup-uv@v3
+        
+      - name: Setup Node.js
+        if: contains(steps.pr-labels.outputs.phase, 'phase-3') || contains(steps.pr-labels.outputs.phase, 'phase-4')
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Phase 1 - Discovery Validation
+        if: contains(steps.pr-labels.outputs.phase, 'phase-1')
+        run: |
+          echo "Validating Phase 1 requirements..."
+          
+          # フィーチャーファイルの存在確認
+          FEATURE_FILE="features/${{ steps.feature.outputs.feature }}.feature"
+          if [[ ! -f "$FEATURE_FILE" ]]; then
+            echo "::error::Feature file not found: $FEATURE_FILE"
+            exit 1
+          fi
+          
+          # Gherkin構文の基本検証
+          if ! grep -q "Feature:" "$FEATURE_FILE"; then
+            echo "::error::Feature file missing 'Feature:' declaration"
+            exit 1
+          fi
+          
+          if ! grep -q "Scenario:" "$FEATURE_FILE"; then
+            echo "::error::Feature file missing 'Scenario:' declarations"
+            exit 1
+          fi
+          
+          # シナリオ数のカウント
+          SCENARIO_COUNT=$(grep -c "Scenario:" "$FEATURE_FILE" || true)
+          echo "Found $SCENARIO_COUNT scenarios"
+          
+          if [[ $SCENARIO_COUNT -lt 3 ]]; then
+            echo "::warning::Recommended to have at least 3 scenarios (found: $SCENARIO_COUNT)"
+          fi
+          
+          echo "✅ Phase 1 validation passed"
+          
+      - name: Phase 2 - Documentation Validation
+        if: contains(steps.pr-labels.outputs.phase, 'phase-2')
+        run: |
+          echo "Validating Phase 2 requirements..."
+          
+          # 仕様書の存在確認
+          SPEC_DIR="docs/${{ steps.feature.outputs.feature }}"
+          if [[ ! -d "$SPEC_DIR" ]]; then
+            echo "::error::Specification directory not found: $SPEC_DIR"
+            exit 1
+          fi
+          
+          # 必須ドキュメントの確認
+          REQUIRED_DOCS=(
+            "spec_v1.0.md"
+            "api_spec.yaml"
+          )
+          
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [[ ! -f "$SPEC_DIR/$doc" ]]; then
+              echo "::warning::Recommended document not found: $SPEC_DIR/$doc"
+            fi
+          done
+          
+          # 最低限の仕様書確認
+          if ! find "$SPEC_DIR" -name "*.md" -o -name "*.yaml" | grep -q .; then
+            echo "::error::No specification documents found in $SPEC_DIR"
+            exit 1
+          fi
+          
+          echo "✅ Phase 2 validation passed"
+          
+      - name: Phase 3 - Validation (Test) Verification
+        if: contains(steps.pr-labels.outputs.phase, 'phase-3')
+        run: |
+          echo "Validating Phase 3 requirements..."
+          
+          # バックエンド依存関係インストール
+          cd backend && uv sync && cd ..
+          
+          # フロントエンド依存関係インストール
+          cd frontend && npm ci && cd ..
+          
+          # テストファイルの存在確認
+          FEATURE="${{ steps.feature.outputs.feature }}"
+          
+          # Pythonテスト
+          PYTHON_TESTS=$(find backend/tests -name "*${FEATURE}*" -name "*.py" | grep -v __pycache__ || true)
+          if [[ -z "$PYTHON_TESTS" ]]; then
+            echo "::warning::No Python tests found for feature: $FEATURE"
+          fi
+          
+          # TypeScriptテスト
+          TS_TESTS=$(find frontend/src -name "*${FEATURE}*" -name "*.test.*" || true)
+          if [[ -z "$TS_TESTS" ]]; then
+            echo "::warning::No TypeScript tests found for feature: $FEATURE"
+          fi
+          
+          # テストが失敗することを確認（TDDの原則）
+          echo "Checking that tests fail (as expected in Phase 3)..."
+          
+          # Pythonテストの実行
+          if [[ -n "$PYTHON_TESTS" ]]; then
+            cd backend
+            pytest_output=$(uv run pytest -k "$FEATURE" -v 2>&1)
+            pytest_exit_code=$?
+            if [[ $pytest_exit_code -eq 0 ]]; then
+              echo "::error::Tests are passing in Phase 3! Tests should fail until implementation."
+              exit 1
+            elif [[ $pytest_exit_code -ne 1 ]]; then
+              echo "::error::Pytest encountered an error unrelated to test failures:"
+              echo "$pytest_output"
+              exit $pytest_exit_code
+            else
+              echo "✅ Python tests are correctly failing"
+            fi
+            cd ..
+          fi
+          
+          echo "✅ Phase 3 validation passed"
+          
+      - name: Phase 4 - Generation (Implementation) Verification
+        if: contains(steps.pr-labels.outputs.phase, 'phase-4')
+        run: |
+          echo "Validating Phase 4 requirements..."
+          
+          # 依存関係インストール
+          cd backend && uv sync && cd ..
+          cd frontend && npm ci && cd ..
+          
+          FEATURE="${{ steps.feature.outputs.feature }}"
+          
+          # テストが成功することを確認
+          echo "Checking that all tests pass..."
+          
+          # Pythonテスト
+          cd backend
+          if ! uv run pytest -k "$FEATURE" -v; then
+            echo "::error::Python tests are failing in Phase 4!"
+            exit 1
+          fi
+          echo "✅ Python tests passing"
+          
+          # カバレッジチェック
+          uv run pytest -k "$FEATURE" --cov=app --cov-report=term-missing --cov-fail-under=70
+          cd ..
+          
+          # TypeScriptテスト
+          cd frontend
+          if ! npm test -- --run; then
+            echo "::error::TypeScript tests are failing in Phase 4!"
+            exit 1
+          fi
+          echo "✅ TypeScript tests passing"
+          cd ..
+          
+          # コード品質チェック
+          echo "Running code quality checks..."
+          
+          # Python
+          cd backend
+          uv run ruff check .
+          cd ..
+          
+          # TypeScript
+          cd frontend
+          npm run lint
+          npm run typecheck
+          cd ..
+          
+          echo "✅ Phase 4 validation passed"
+          
+      - name: Add phase status comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const phase = '${{ steps.pr-labels.outputs.phase }}';
+            const feature = '${{ steps.feature.outputs.feature }}';
+            const passed = '${{ job.status }}' === 'success';
+            
+            const emoji = passed ? '✅' : '❌';
+            const status = passed ? 'PASSED' : 'FAILED';
+            
+            const comment = `## ${emoji} SDAD Phase Gate: ${status}
+            
+            **Phase**: ${phase}
+            **Feature**: ${feature}
+            **Time**: ${new Date().toISOString()}
+            
+            ${passed ? 
+              'All phase requirements have been met. Ready to proceed!' : 
+              'Please check the workflow logs for detailed error messages.'}
+            
+            ### Next Steps
+            ${phase === 'phase-1' && passed ? '- Get feature file approved by Product Owner\n- Move to Phase 2 (Documentation)' : ''}
+            ${phase === 'phase-2' && passed ? '- Get specifications approved by all stakeholders\n- Move to Phase 3 (Validation/Testing)' : ''}
+            ${phase === 'phase-3' && passed ? '- Confirm all tests are failing as expected\n- Move to Phase 4 (Generation/Implementation)' : ''}
+            ${phase === 'phase-4' && passed ? '- Ready for final code review\n- Merge when approved' : ''}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  agent-task-check:
+    name: Verify Agent Task Completion
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'agent-task')
+    
+    steps:
+      - name: Check task packet completion
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // PRの説明文からTask IDを抽出
+            const body = context.payload.pull_request.body || '';
+            const taskIdMatch = body.match(/Task_ID:\s*(ITDO-ERP2-[^\s]+)/);
+            
+            if (!taskIdMatch) {
+              core.setFailed('No Task_ID found in PR description');
+              return;
+            }
+            
+            const taskId = taskIdMatch[1];
+            console.log(`Found Task ID: ${taskId}`);
+            
+            // Definition of Doneのチェック
+            const dodChecks = body.match(/\[[\sx]\]/g) || [];
+            const completedChecks = dodChecks.filter(check => check === '[x]').length;
+            const totalChecks = dodChecks.length;
+            
+            if (totalChecks === 0) {
+              core.setFailed('No Definition of Done checklist found');
+              return;
+            }
+            
+            if (completedChecks < totalChecks) {
+              core.setFailed(`Definition of Done incomplete: ${completedChecks}/${totalChecks} items checked`);
+              return;
+            }
+            
+            console.log(`✅ All ${totalChecks} Definition of Done items completed`);

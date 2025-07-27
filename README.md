@@ -39,6 +39,17 @@ Windows Host
 
 詳細は[システムアーキテクチャ詳細](docs/SYSTEM_ARCHITECTURE.md)を参照してください。
 
+## 🆕 SDAD（仕様駆動AI開発）統合
+
+Claude Code ClusterがSDAD手法をサポートしました。フェーズ駆動の開発プロセスで品質を向上させます。
+
+```bash
+# SDAD環境のセットアップ
+make setup-sdad
+```
+
+詳細は[SDAD統合アーキテクチャ](docs/architecture/SDAD_CLAUDE_CODE_CLUSTER_INTEGRATION.md)を参照してください。
+
 ## 📁 ドキュメント
 
 ### 🔧 セットアップ・運用
@@ -48,6 +59,7 @@ Windows Host
 - [WSL2クイックスタート](wsl2/README.md) - Windows環境での簡単セットアップ
 - [運用ガイド](OPERATION_GUIDE.md) - 日常的な運用とメンテナンス
 - [トラブルシューティング](docs/troubleshooting.md) - 問題解決ガイド
+- [SDAD統合アーキテクチャ](docs/architecture/SDAD_CLAUDE_CODE_CLUSTER_INTEGRATION.md) - SDAD手法との統合
 
 ### 🏗️ アーキテクチャ
 
